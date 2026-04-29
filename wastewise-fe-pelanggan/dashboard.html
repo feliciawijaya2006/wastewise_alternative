@@ -1,4 +1,4 @@
-<!-- File: dashboard.html -->
+<!-- File: dashboard.html - DIPERBAIKI -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -21,88 +21,130 @@
                     <h1 class="text-xl font-bold text-gray-800">Halo, Leonard! 👋</h1>
                     <p class="text-xs text-gray-500">Mau makan apa hari ini?</p>
                 </div>
-                <div class="w-10 h-10 bg-gray-200 rounded-full overflow-hidden">
-                    <!-- Placeholder Foto Profil -->
-                    <img src="https://via.placeholder.com/40" alt="Profile">
+                <div class="w-10 h-10 bg-gray-200 rounded-full overflow-hidden border-2 border-green-500">
+                    <img src="https://ui-avatars.com/api/?name=Leonard&background=10b981&color=fff" alt="Profile" class="w-full h-full object-cover">
                 </div>
             </div>
             
             <!-- Search Bar -->
             <div class="bg-gray-100 rounded-xl flex items-center px-3 py-2">
                 <i class="fas fa-search text-gray-400 mr-2"></i>
-                <input type="text" placeholder="Cari makanan..." class="bg-transparent text-sm w-full outline-none">
+                <input 
+                    type="text" 
+                    id="searchInput"
+                    placeholder="Cari makanan..." 
+                    class="bg-transparent text-sm w-full outline-none"
+                    onkeyup="searchProducts()"
+                >
             </div>
         </div>
 
         <!-- Content (List Makanan) -->
-        <div class="p-5 flex-1 overflow-y-auto">
+        <div class="p-5 flex-1 overflow-y-auto" id="product-list">
             
             <h2 class="text-lg font-bold text-gray-800 mb-3">Rekomendasi</h2>
             
             <!-- Grid Produk -->
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4" id="product-grid">
                 
                 <!-- Produk 1 -->
-                <a href="detail.html" class="bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition block">
+                <div class="product-item bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition block cursor-pointer" data-name="paket 5k">
                     <div class="h-24 bg-gray-200 rounded-lg mb-2 overflow-hidden">
-                        <img src="https://source.unsplash.com/100x100/?food" class="w-full h-full object-cover">
+                        <img src="https://source.unsplash.com/100x100/?nasi,food" class="w-full h-full object-cover" alt="Paket 5k">
                     </div>
                     <h3 class="font-bold text-sm text-gray-800">Paket 5k</h3>
                     <p class="text-xs text-gray-500 mb-2">Warung AW</p>
                     <div class="flex justify-between items-center">
                         <span class="text-green-600 font-bold text-sm">Rp5.000</span>
-                        <button class="bg-green-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center" onclick="addToCart('Paket 5k', 5000)">+</button>
+                        <button onclick="addToCart('Paket 5k', 5000)" class="bg-green-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center hover:bg-green-700 transition">
+                            <i class="fas fa-plus"></i>
+                        </button>
                     </div>
-                </a>
+                </div>
 
                 <!-- Produk 2 -->
-                <a href="detail.html" class="bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition block">
+                <div class="product-item bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition block cursor-pointer" data-name="burger murah">
                     <div class="h-24 bg-gray-200 rounded-lg mb-2 overflow-hidden">
-                        <img src="https://source.unsplash.com/100x100/?burger" class="w-full h-full object-cover">
+                        <img src="https://source.unsplash.com/100x100/?burger" class="w-full h-full object-cover" alt="Burger">
                     </div>
                     <h3 class="font-bold text-sm text-gray-800">Burger Murah</h3>
                     <p class="text-xs text-gray-500 mb-2">Warung AW</p>
                     <div class="flex justify-between items-center">
                         <span class="text-green-600 font-bold text-sm">Rp8.000</span>
-                        <button class="bg-green-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center" onclick="addToCart('Burger', 8000)">+</button>
+                        <button onclick="addToCart('Burger Murah', 8000)" class="bg-green-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center hover:bg-green-700 transition">
+                            <i class="fas fa-plus"></i>
+                        </button>
                     </div>
-                </a>
+                </div>
 
-                 <!-- Produk 3 -->
-                 <a href="detail.html" class="bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition block">
+                <!-- Produk 3 -->
+                <div class="product-item bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition block cursor-pointer" data-name="es teh manis">
                     <div class="h-24 bg-gray-200 rounded-lg mb-2 overflow-hidden">
-                        <img src="https://source.unsplash.com/100x100/?drink" class="w-full h-full object-cover">
+                        <img src="https://source.unsplash.com/100x100/?drink,tea" class="w-full h-full object-cover" alt="Es Teh">
                     </div>
                     <h3 class="font-bold text-sm text-gray-800">Es Teh Manis</h3>
                     <p class="text-xs text-gray-500 mb-2">Warung AW</p>
                     <div class="flex justify-between items-center">
                         <span class="text-green-600 font-bold text-sm">Rp3.000</span>
-                        <button class="bg-green-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center" onclick="addToCart('Es Teh', 3000)">+</button>
+                        <button onclick="addToCart('Es Teh Manis', 3000)" class="bg-green-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center hover:bg-green-700 transition">
+                            <i class="fas fa-plus"></i>
+                        </button>
                     </div>
-                </a>
+                </div>
+
+                <!-- Produk 4 -->
+                <div class="product-item bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition block cursor-pointer" data-name="ayam goreng">
+                    <div class="h-24 bg-gray-200 rounded-lg mb-2 overflow-hidden">
+                        <img src="https://source.unsplash.com/100x100/?chicken" class="w-full h-full object-cover" alt="Ayam">
+                    </div>
+                    <h3 class="font-bold text-sm text-gray-800">Ayam Goreng</h3>
+                    <p class="text-xs text-gray-500 mb-2">Warung AW</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-600 font-bold text-sm">Rp15.000</span>
+                        <button onclick="addToCart('Ayam Goreng', 15000)" class="bg-green-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center hover:bg-green-700 transition">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
 
             </div>
         </div>
 
         <!-- Bottom Navigation -->
         <div class="bg-white border-t p-4 flex justify-around items-center sticky bottom-0 z-10">
-            <a href="#" class="text-green-600 flex flex-col items-center text-xs">
+            <a href="dashboard.html" class="text-green-600 flex flex-col items-center text-xs">
                 <i class="fas fa-home text-xl mb-1"></i> Home
             </a>
-            <a href="#" class="text-gray-400 flex flex-col items-center text-xs">
+            <a href="#" onclick="alert('Fitur pencarian akan segera hadir!')" class="text-gray-400 hover:text-gray-600 flex flex-col items-center text-xs">
                 <i class="fas fa-search text-xl mb-1"></i> Cari
             </a>
-            <a href="cart.html" class="text-gray-400 flex flex-col items-center text-xs">
+            <a href="cart.html" class="text-gray-400 hover:text-gray-600 flex flex-col items-center text-xs relative">
                 <i class="fas fa-shopping-cart text-xl mb-1"></i> Keranjang
-                <!-- Badge Keranjang -->
-                <span id="cart-badge" class="hidden absolute top-2 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full text-center leading-4 ml-4">0</span>
+                <span id="cart-badge" class="hidden absolute -top-1 right-0 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full text-center leading-4">0</span>
             </a>
-            <a href="#" class="text-gray-400 flex flex-col items-center text-xs">
-                <i class="fas fa-user text-xl mb-1"></i> Akun
+            <a href="profile.html" class="text-gray-400 hover:text-gray-600 flex flex-col items-center text-xs">
+                <i class="fas fa-user text-xl mb-1"></i> Profil
             </a>
         </div>
     </div>
 
     <script src="app.js"></script>
+    <script>
+        // Fungsi Search
+        function searchProducts() {
+            let input = document.getElementById('searchInput');
+            let filter = input.value.toLowerCase();
+            let products = document.getElementsByClassName('product-item');
+            
+            for (let i = 0; i < products.length; i++) {
+                let productName = products[i].getAttribute('data-name');
+                if (productName.includes(filter)) {
+                    products[i].style.display = "";
+                } else {
+                    products[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 </body>
 </html>

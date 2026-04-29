@@ -1,4 +1,4 @@
-<!-- File: cart.html -->
+<!-- File: cart.html - DIPERBAIKI -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -7,31 +7,36 @@
     <title>WasteWise - Keranjang</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }</style>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+    </style>
 </head>
 <body class="flex justify-center min-h-screen bg-gray-200">
 
     <div class="w-full max-w-[375px] bg-gray-50 h-full min-h-screen flex flex-col">
         
         <!-- Header -->
-        <div class="bg-white p-5 rounded-b-3xl shadow-sm flex items-center">
-            <a href="dashboard.html" class="mr-4"><i class="fas fa-arrow-left text-lg"></i></a>
-            <h1 class="text-lg font-bold">Keranjang Saya</h1>
+        <div class="bg-white p-5 rounded-b-3xl shadow-sm flex items-center sticky top-0 z-10">
+            <a href="dashboard.html" class="mr-4 text-gray-700 hover:text-gray-900">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </a>
+            <h1 class="text-lg font-bold text-gray-800">Keranjang Saya</h1>
         </div>
 
         <!-- List Item -->
         <div class="p-5 flex-1 overflow-y-auto" id="cart-items">
-            <!-- Item akan diisi otomatis oleh app.js -->
-            <p class="text-center text-gray-400 mt-10">Memuat...</p>
+            <!-- Item akan diisi otomatis oleh JavaScript -->
         </div>
 
         <!-- Footer Checkout -->
-        <div class="bg-white p-5 border-t rounded-t-3xl shadow-lg">
-            <div class="flex justify-between mb-4">
-                <span class="text-gray-600">Total Harga</span>
+        <div class="bg-white p-5 border-t rounded-t-3xl shadow-lg sticky bottom-0 z-10">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <span class="text-gray-600 text-sm">Total Harga</span>
+                </div>
                 <span class="font-bold text-xl text-green-700" id="total-price">Rp0</span>
             </div>
-            <button onclick="alert('Pesanan berhasil dikirim!')" class="w-full bg-green-700 text-white py-3 rounded-xl font-bold hover:bg-green-800">
+            <button onclick="konfirmasiPesanan()" class="w-full bg-green-700 text-white py-3 rounded-xl font-bold hover:bg-green-800 transition">
                 Konfirmasi Pesanan
             </button>
         </div>
@@ -39,5 +44,22 @@
     </div>
 
     <script src="app.js"></script>
+    <script>
+        // Render cart saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCartPage();
+        });
+        
+        function konfirmasiPesanan() {
+            let cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
+            if (cart.length === 0) {
+                alert('Keranjang masih kosong!');
+                return;
+            }
+            alert('Pesanan berhasil dikirim! Terima kasih sudah berbelanja.');
+            localStorage.removeItem('wastewise_cart');
+            window.location.href = 'dashboard.html';
+        }
+    </script>
 </body>
 </html>
