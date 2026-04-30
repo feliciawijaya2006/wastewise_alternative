@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Muser;
 use App\Models\User;
 
 return [
@@ -42,6 +43,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // API guard using Sanctum tokens with muser table
+        'sanctum' => [
+            'driver' => 'sanctum',
+            'provider' => 'musers',
+        ],
     ],
 
     /*
@@ -67,10 +74,11 @@ return [
             'model' => env('AUTH_MODEL', User::class),
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        // Provider for the muser table
+        'musers' => [
+            'driver' => 'eloquent',
+            'model' => Muser::class,
+        ],
     ],
 
     /*
