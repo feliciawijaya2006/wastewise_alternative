@@ -20,6 +20,7 @@
         padding: 0;
         box-sizing: border-box;
         font-family: "Inter", sans-serif;
+        transition: all 0.2s ease;
       }
 
       body {
@@ -34,7 +35,7 @@
         width: 100%;
         max-width: 375px;
         height: 812px;
-        background: white;
+        background: linear-gradient(to bottom, #ffffff, #f9fafb);
         border-radius: 30px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         padding: 20px;
@@ -43,89 +44,81 @@
         position: relative;
         overflow: hidden;
       }
+
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
+
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
     </style>
   </head>
 
   <body>
     <div class="phone-frame pb-20">
       <!-- HEADER -->
-      <div class="mt-2 mb-2">
+      <div class="mt-2 mb-3">
         <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold text-[#003d2b]">Halo, Warung AW!</h1>
-
-          <div
-            class="w-11 h-11 bg-[#f28a2c] rounded-full flex items-center justify-center shadow"
-          >
-            <i class="fa-solid fa-bell text-white text-lg"></i>
+          <div>
+            <h1 class="text-2xl font-bold text-[#003d2b]">
+              Halo, Warung AW 👋
+            </h1>
           </div>
+
+          <a href="notifikasi.html">
+            <div
+              class="relative w-11 h-11 bg-[#f28a2c] rounded-full flex items-center justify-center shadow-md cursor-pointer active:scale-95"
+            >
+              <i class="fa-solid fa-bell text-white text-lg"></i>
+            </div>
+          </a>
         </div>
 
         <p class="text-base text-black font-semibold mt-4">
           Pesanan untuk Saya
         </p>
       </div>
-      <!-- CONTENT WRAPPER -->
-      <div class="flex-1 flex flex-col">
+
+      <!-- CONTENT -->
+      <div class="flex-1 flex flex-col overflow-hidden">
         <!-- TAB -->
-        <div class="flex bg-gray-100 p-2 rounded-full w-full">
+        <div class="flex bg-gray-100 p-1 rounded-full shadow-inner">
           <button
-            class="flex-1 px-2 py-1 rounded-full bg-[#003d2b] text-white text-sm"
+            class="tab-btn flex-1 py-2 rounded-full text-sm font-semibold bg-[#003d2b] text-white shadow-sm transition-all duration-200"
+            data-tab="semua"
           >
             Semua
           </button>
 
-          <button class="flex-1 px-2 py-1 rounded-full text-gray-600 text-sm">
-            Pesanan Baru
+          <button
+            class="tab-btn flex-1 py-2 rounded-full text-sm font-semibold text-gray-500 transition-all duration-200"
+            data-tab="baru"
+          >
+            Baru
           </button>
 
-          <button class="flex-1 px-2 py-1 rounded-full text-gray-600 text-sm">
-            Dipersiapkan
+          <button
+            class="tab-btn flex-1 py-2 rounded-full text-sm font-semibold text-gray-500 transition-all duration-200"
+            data-tab="proses"
+          >
+            Proses
           </button>
         </div>
 
-        <!-- CARD -->
-        <div class="mt-6 flex justify-center">
-          <div
-            class="bg-white rounded-2xl border border-gray-300 shadow-sm p-4 w-full"
-          >
-            <div class="flex justify-between items-center mb-3">
-              <span
-                class="bg-orange-500 text-white text-xs px-3 py-1 rounded-full"
-              >
-                Pesanan Baru
-              </span>
-              <span class="text-lg font-bold">#20</span>
-            </div>
-
-            <div class="flex justify-between items-center mb-3">
-              <h2 class="text-base font-semibold">Jonathan</h2>
-              <span class="text-gray-400 text-sm">08.30</span>
-            </div>
-
-            <div class="text-sm space-y-1 mb-3">
-              <div class="flex justify-between text-gray-600">
-                <span>Nasi Goreng</span>
-                <span>x1</span>
-              </div>
-
-              <div class="flex justify-between text-gray-600">
-                <span>Mie Goreng</span>
-                <span>x1</span>
-              </div>
-            </div>
-
-            <div class="border-t pt-2 flex justify-end">
-              <span class="font-bold">Rp 24.000</span>
-            </div>
-
-            <div class="flex justify-end mt-3">
-              <button
-                class="border border-emerald-800 text-emerald-800 text-sm font-semibold px-4 py-2 rounded-lg"
-              >
-                Siapkan Pesanan
-              </button>
-            </div>
-          </div>
+        <!-- LIST -->
+        <div class="flex-1 overflow-y-auto no-scrollbar mt-4 pr-1 pb-2">
+          <div id="order-list" class="space-y-4"></div>
         </div>
       </div>
 
@@ -133,8 +126,147 @@
       <div id="navbar"></div>
     </div>
 
-    <!-- SCRIPT NAVBAR -->
     <script>
+      // ================= DATA =================
+      const orders = [
+        {
+          id: 20,
+          nama: "Jonathan",
+          waktu: "08.30",
+          status: "baru",
+          items: [
+            { nama: "Nasi Goreng", qty: 1 },
+            { nama: "Mie Goreng", qty: 1 },
+          ],
+          total: 24000,
+        },
+        {
+          id: 21,
+          nama: "Siti",
+          waktu: "09.00",
+          status: "proses",
+          items: [{ nama: "Ayam Geprek", qty: 2 }],
+          total: 30000,
+        },
+        {
+          id: 22,
+          nama: "Budi",
+          waktu: "09.15",
+          status: "baru",
+          items: [{ nama: "Bakso", qty: 1 }],
+          total: 15000,
+        },
+      ];
+
+      const orderList = document.getElementById("order-list");
+
+      // ================= RENDER =================
+      function renderOrders(filter = "semua") {
+        orderList.innerHTML = "";
+
+        const filtered =
+          filter === "semua"
+            ? orders
+            : orders.filter((o) => o.status === filter);
+
+        if (filtered.length === 0) {
+          orderList.innerHTML =
+            '<p class="text-center text-gray-400 mt-10">Tidak ada pesanan</p>';
+          return;
+        }
+
+        filtered.forEach((order) => {
+          const itemsHTML = order.items
+            .map(
+              (item) => `
+              <div class="flex justify-between text-gray-600">
+                <span>${item.nama}</span>
+                <span>x${item.qty}</span>
+              </div>
+            `,
+            )
+            .join("");
+
+          const statusLabel =
+            order.status === "baru" ? "Pesanan Baru" : "Dipersiapkan";
+
+          const statusColor =
+            order.status === "baru" ? "bg-orange-500" : "bg-emerald-600";
+
+          const card = `
+            <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-4 hover:shadow-lg">
+              
+              <div class="flex justify-between items-center mb-3">
+                <span class="${statusColor} text-white text-xs px-3 py-1 rounded-full">
+                  ${statusLabel}
+                </span>
+                <span class="text-lg font-bold text-gray-700">#${order.id}</span>
+              </div>
+
+              <div class="flex justify-between items-center mb-3">
+                <h2 class="text-base font-semibold text-gray-800">${order.nama}</h2>
+                <span class="text-gray-400 text-xs">${order.waktu}</span>
+              </div>
+
+              <div class="text-sm space-y-1 mb-3">
+                ${itemsHTML}
+              </div>
+
+              <div class="border-t pt-2 flex justify-between">
+                <span class="text-xs text-gray-400">Total</span>
+                <span class="font-bold text-[#003d2b]">
+                  Rp ${order.total.toLocaleString()}
+                </span>
+              </div>
+
+              ${
+                order.status === "baru"
+                  ? `
+                <div class="flex justify-end mt-4">
+                  <button
+                    onclick="updateStatus(${order.id})"
+                    class="bg-[#003d2b] text-white text-sm px-4 py-2 rounded-lg active:scale-95"
+                  >
+                    Siapkan
+                  </button>
+                </div>
+              `
+                  : ""
+              }
+            </div>
+          `;
+
+          orderList.innerHTML += card;
+        });
+      }
+
+      // ================= UPDATE =================
+      const tabs = document.querySelectorAll(".tab-btn");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const selected = tab.dataset.tab;
+
+          // reset semua
+          tabs.forEach((t) => {
+            t.classList.remove("bg-[#003d2b]", "text-white", "shadow-sm");
+            t.classList.add("text-gray-500");
+          });
+
+          // aktifkan yang dipilih
+          tab.classList.add("bg-[#003d2b]", "text-white", "shadow-sm");
+          tab.classList.remove("text-gray-500");
+
+          renderOrders(selected);
+        });
+      });
+
+      // ================= LOAD =================
+      document.addEventListener("DOMContentLoaded", () => {
+        renderOrders();
+      });
+
+      // ================= NAVBAR =================
       fetch("../components/navbar.html")
         .then((res) => res.text())
         .then((data) => {
