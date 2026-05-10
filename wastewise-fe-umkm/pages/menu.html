@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu</title>
+
+    <!-- FONT AWESOME -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: #f3f4f6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .phone-frame {
+        width: 100%;
+        max-width: 375px;
+        height: 812px;
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="phone-frame pb-20">
+      <!-- HEADER -->
+      <div class="flex items-center justify-between mb-4 mt-2">
+        <h1 class="text-2xl font-bold text-[#003d2b]">Menu Toko Saya</h1>
+
+        <button
+          onclick="window.location.href = 'tambah-menu.html'"
+          class="w-11 h-11 bg-[#f28a2c] rounded-full flex items-center justify-center shadow hover:scale-105 active:scale-95 transition"
+        >
+          <i class="fa-solid fa-plus text-white text-lg"></i>
+        </button>
+      </div>
+
+      <!-- SEARCH -->
+      <div class="mb-4">
+        <div class="flex items-center bg-gray-100 rounded-full px-4 py-2">
+          <i class="fa fa-search text-gray-400"></i>
+          <input
+            type="text"
+            placeholder="Cari menu..."
+            class="bg-transparent w-full ml-2 outline-none text-sm"
+          />
+        </div>
+      </div>
+
+      <!-- MENU LIST -->
+      <div id="menu-container" class="flex-1 overflow-y-auto space-y-3">
+        <!-- CARD -->
+        <div
+          class="bg-white border rounded-2xl p-3 shadow-sm flex items-center gap-3"
+        >
+          <img
+            src="../assets/images/nasigoreng.png"
+            class="w-14 h-14 rounded-xl object-cover"
+          />
+
+          <div class="flex-1">
+            <div class="flex justify-between items-center">
+              <h3 class="font-semibold text-sm">Nasi Goreng Spesial</h3>
+
+              <!-- TOGGLE -->
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" checked />
+                <div
+                  class="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-[#003d2b]"
+                ></div>
+                <div
+                  class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-5 transition"
+                ></div>
+              </label>
+            </div>
+
+            <p class="text-xs text-gray-500">Rp 18.000</p>
+            <p class="text-xs text-gray-500 mt-2">Sisa stok: 12</p>
+          </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div
+          class="bg-white border rounded-2xl p-3 shadow-sm flex items-center gap-3"
+        >
+          <img
+            src="../assets/images/ayamgoreng.png"
+            class="w-14 h-14 rounded-xl object-cover"
+          />
+
+          <div class="flex-1">
+            <div class="flex justify-between items-center">
+              <h3 class="font-semibold text-sm">Ayam Goreng</h3>
+
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" />
+                <div
+                  class="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-[#003d2b]"
+                ></div>
+                <div
+                  class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-5 transition"
+                ></div>
+              </label>
+            </div>
+
+            <p class="text-xs text-gray-500">Rp 15.000</p>
+            <p class="text-xs text-gray-500 mt-2">Sisa stok: 5</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- NAVBAR -->
+      <div id="navbar"></div>
+    </div>
+
+    <!-- SCRIPT NAVBAR -->
+    <script>
+      const container = document.getElementById("menu-container");
+      const searchInput = document.querySelector("input[type='text']");
+
+      let allMenus = [];
+
+      // ================= FETCH DATA =================
+      async function fetchMenus() {
+        try {
+          // SIMULASI API (ganti ke backend nanti)
+          const data = [
+            {
+              id: 1,
+              nama: "Nasi Goreng Spesial",
+              harga: 18000,
+              stok: 12,
+              aktif: true,
+              gambar: "../assets/images/nasigoreng.png",
+            },
+            {
+              id: 2,
+              nama: "Ayam Goreng",
+              harga: 15000,
+              stok: 5,
+              aktif: false,
+              gambar: "../assets/images/ayamgoreng.png",
+            },
+            {
+              id: 3,
+              nama: "Es Teh Manis",
+              harga: 5000,
+              stok: 20,
+              aktif: true,
+              gambar: "../assets/images/esteh.png",
+            },
+          ];
+
+          allMenus = data;
+          renderMenus(data);
+        } catch (err) {
+          console.error("Fetch gagal:", err);
+        }
+      }
+
+      // ================= FORMAT RUPIAH =================
+      function formatRupiah(angka) {
+        return "Rp " + angka.toLocaleString("id-ID");
+      }
+
+      // ================= RENDER =================
+      function renderMenus(data) {
+        container.innerHTML = "";
+
+        if (data.length === 0) {
+          container.innerHTML =
+            "<p class='text-center text-gray-400 text-sm mt-5'>Menu tidak ditemukan</p>";
+          return;
+        }
+
+        data.forEach((menu) => {
+          const item = `
+        <div class="bg-white border rounded-2xl p-3 shadow-sm flex items-center gap-3">
+          
+          <img src="${menu.gambar}" class="w-14 h-14 rounded-xl object-cover"/>
+
+          <div class="flex-1">
+            <div class="flex justify-between items-center">
+              <h3 class="font-semibold text-sm">${menu.nama}</h3>
+
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  class="sr-only peer toggle-status" 
+                  data-id="${menu.id}"
+                  ${menu.aktif ? "checked" : ""}
+                />
+
+                <div class="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-[#003d2b]"></div>
+                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-5 transition"></div>
+              </label>
+            </div>
+
+            <p class="text-xs text-gray-500">${formatRupiah(menu.harga)}</p>
+            <p class="text-xs text-gray-500 mt-2">Sisa stok: ${menu.stok}</p>
+          </div>
+
+        </div>
+      `;
+
+          container.innerHTML += item;
+        });
+
+        // ================= TOGGLE =================
+        document.querySelectorAll(".toggle-status").forEach((toggle) => {
+          toggle.addEventListener("change", function () {
+            const id = this.dataset.id;
+            const status = this.checked;
+
+            console.log("Update status:", id, status);
+
+            // SIMULASI UPDATE KE SERVER
+            const menu = allMenus.find((m) => m.id == id);
+            if (menu) menu.aktif = status;
+
+            // kalau backend:
+            /*
+        fetch(`http://localhost:3000/menu/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ aktif: status })
+        });
+        */
+          });
+        });
+      }
+
+      // ================= SEARCH =================
+      searchInput.addEventListener("input", function () {
+        const keyword = this.value.toLowerCase();
+
+        const filtered = allMenus.filter((menu) =>
+          menu.nama.toLowerCase().includes(keyword),
+        );
+
+        renderMenus(filtered);
+      });
+
+      // ================= INIT =================
+      fetchMenus();
+
+      fetch("../components/navbar.html")
+        .then((res) => res.text())
+        .then((data) => {
+          document.getElementById("navbar").innerHTML = data;
+
+          const path = window.location.pathname;
+
+          document.querySelectorAll(".nav-item").forEach((item) => {
+            const page = item.getAttribute("data-page");
+
+            if (path.includes(page)) {
+              item.classList.remove("text-gray-500");
+              item.classList.add("text-[#003D2B]", "font-semibold");
+            }
+          });
+        });
+    </script>
+  </body>
+</html>

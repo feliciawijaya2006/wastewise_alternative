@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daftar</title>
+
+    <!-- Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .login-container {
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+        padding: 35px 25px;
+      }
+
+      header h1 {
+        color: #003d2b;
+        font-size: 28px;
+        font-weight: 700;
+      }
+
+      header p {
+        color: #777;
+        font-size: 13px;
+        margin-bottom: 25px;
+      }
+
+      .illustration img {
+        width: 200px;
+        margin: 0 auto 25px;
+        display: block;
+      }
+
+      .btn-primary {
+        background: #003d29;
+        color: white;
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .btn-primary:hover {
+        background: #005c3f;
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        font-size: 12px;
+        color: #aaa;
+        margin: 20px 0;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #e5e5e5;
+      }
+
+      .divider::before {
+        margin-right: 10px;
+      }
+
+      .divider::after {
+        margin-left: 10px;
+      }
+
+      .social-login {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .social-login button {
+        width: 80px;
+        height: 45px;
+        border-radius: 8px;
+        border: 1px solid #eee;
+        background: white;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .social-login button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      footer {
+        text-align: center;
+        font-size: 13px;
+        color: #888;
+      }
+
+      footer a {
+        color: #006b4d;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .input-box {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        background: white;
+        transition: 0.2s;
+      }
+
+      .input-box:focus-within {
+        border-color: #22c55e;
+        box-shadow: 0 0 0 2px #dcfce7;
+      }
+
+      .input-box input {
+        width: 100%;
+        outline: none;
+        font-size: 14px;
+      }
+
+      .input-error {
+        border: 1px solid #ef4444 !important;
+      }
+
+      .error-text {
+        color: #ef4444;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="login-container">
+      <header>
+        <h1>Daftar</h1>
+        <p>Silahkan isi data diri anda</p>
+      </header>
+
+      <div class="illustration">
+        <img src="../assets/images/login.png" alt="Register" />
+      </div>
+
+      <form id="registerForm" class="space-y-4">
+        <!-- NAMA -->
+        <div class="input-box">
+          <input type="text" placeholder="Nama lengkap" id="name" required />
+        </div>
+
+        <!-- EMAIL -->
+        <div class="input-box">
+          <input type="email" placeholder="Email" id="email" required />
+        </div>
+
+        <!-- KOTA -->
+        <div class="input-box">
+          <input type="text" placeholder="Kota domisili" id="city" required />
+        </div>
+
+        <!-- PHONE -->
+        <div class="input-box">
+          <div
+            class="flex items-center gap-2 pr-6 mr-6 border-r border-gray-300"
+          >
+            <img src="https://flagcdn.com/w20/id.png" class="w-5" />
+            <span class="font-semibold text-sm">+62</span>
+          </div>
+          <input type="text" placeholder="Nomor Handphone" id="phone" />
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="input-box">
+          <input
+            type="password"
+            id="password"
+            placeholder="Kata sandi"
+            required
+          />
+          <span
+            onclick="togglePassword(this)"
+            class="cursor-pointer text-gray-400"
+          >
+            <i class="fa-solid fa-eye"></i>
+          </span>
+        </div>
+
+        <!-- KONFIRMASI PASSWORD -->
+        <div class="input-box">
+          <input
+            type="password"
+            id="confirmPassword"
+            placeholder="Konfirmasi kata sandi"
+            required
+          />
+        </div>
+
+        <!-- ERROR -->
+        <p id="errorMsg" class="text-red-500 text-sm hidden">
+          Password tidak sama!
+        </p>
+
+        <button type="submit" id="registerButton" class="btn-primary">
+          Daftar
+        </button>
+      </form>
+
+      <div class="divider">Atau daftar dengan</div>
+
+      <div class="social-login">
+        <button><i class="fab fa-google text-[#EA4335]"></i></button>
+        <button><i class="fab fa-facebook-f text-[#1877F2]"></i></button>
+      </div>
+
+      <footer>Sudah punya akun? <a href="login.html">Masuk</a></footer>
+    </div>
+
+    <script>
+      function togglePassword(el) {
+        const input = el.previousElementSibling;
+        const icon = el.querySelector("i");
+
+        if (input.type === "password") {
+          input.type = "text";
+          icon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+          input.type = "password";
+          icon.classList.replace("fa-eye-slash", "fa-eye");
+        }
+      }
+
+      // =========================
+      // AMBIL ELEMENT
+      // =========================
+      const form = document.getElementById("registerForm");
+
+      const nameInput = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const cityInput = document.getElementById("city");
+      const phoneInput = document.getElementById("phone");
+      const passwordInput = document.getElementById("password");
+      const confirmPasswordInput = document.getElementById("confirmPassword");
+
+      const errorMsg = document.getElementById("errorMsg");
+      const registerButton = document.getElementById("registerButton");
+
+      // =========================
+      // VALIDASI
+      // =========================
+      function validatePhone(phone) {
+        const regex = /^[0-9]+$/;
+        return regex.test(phone) && phone.length >= 10;
+      }
+
+      function validateEmail(email) {
+        return email.includes("@");
+      }
+
+      function validatePassword(pass) {
+        return pass.length >= 6;
+      }
+
+      // =========================
+      // SUBMIT REGISTER
+      // =========================
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const city = cityInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const password = passwordInput.value.trim();
+        const confirmPassword = confirmPasswordInput.value.trim();
+
+        // reset error
+        errorMsg.classList.add("hidden");
+
+        // VALIDASI PASSWORD MATCH
+        if (password !== confirmPassword) {
+          errorMsg.textContent = "Password tidak sama!";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+
+        // VALIDASI FIELD KOSONG
+        if (!name || !email || !city || !phone || !password) {
+          errorMsg.textContent = "Semua field wajib diisi!";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+
+        // VALIDASI EMAIL
+        if (!validateEmail(email)) {
+          errorMsg.textContent = "Email tidak valid!";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+
+        // VALIDASI PHONE
+        if (!validatePhone(phone)) {
+          errorMsg.textContent = "Nomor handphone tidak valid!";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+
+        // VALIDASI PASSWORD
+        if (!validatePassword(password)) {
+          errorMsg.textContent = "Password minimal 6 karakter!";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+
+        // =========================
+        // LOADING STATE
+        // =========================
+        registerButton.disabled = true;
+        registerButton.innerText = "Memproses...";
+
+        try {
+          const response = await fetch("http://localhost:3000/api/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              email,
+              city,
+              phone,
+              password,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert("Register berhasil!");
+
+            // redirect ke login
+            window.location.href = "login.html";
+          } else {
+            errorMsg.textContent = data.message || "Register gagal!";
+            errorMsg.classList.remove("hidden");
+          }
+        } catch (error) {
+          console.error(error);
+          errorMsg.textContent = "Tidak bisa terhubung ke server";
+          errorMsg.classList.remove("hidden");
+        } finally {
+          registerButton.disabled = false;
+          registerButton.innerText = "Daftar";
+        }
+      });
+    </script>
+  </body>
+</html>

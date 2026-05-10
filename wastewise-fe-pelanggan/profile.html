@@ -1,0 +1,105 @@
+<!-- File: profile.html -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WasteWise - Profil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }</style>
+</head>
+<body class="flex justify-center min-h-screen bg-gray-200">
+
+    <div class="w-full max-w-[375px] bg-gray-50 h-full min-h-screen flex flex-col">
+        
+        <!-- Header -->
+        <div class="bg-white p-5 rounded-b-3xl shadow-sm flex items-center">
+            <a href="dashboard.html" class="mr-4 text-gray-700">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </a>
+            <h1 class="text-lg font-bold text-gray-800">Profil</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="p-5 flex-1 overflow-y-auto">
+            
+            <!-- Foto Profil -->
+            <div class="bg-white rounded-2xl p-6 mb-4 shadow-sm text-center">
+                <div class="w-24 h-24 bg-green-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+                    <i class="fas fa-user text-4xl text-green-600"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800">Leonard</h2>
+                <p class="text-sm text-gray-500">081234567890</p>
+            </div>
+
+            <!-- Menu Profil -->
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                <div class="p-4 border-b flex items-center justify-between hover:bg-gray-50 cursor-pointer">
+                    <div class="flex items-center">
+                        <i class="fas fa-user-edit text-gray-400 mr-3"></i>
+                        <span class="text-sm text-gray-700">Edit Profil</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                
+                <div class="p-4 border-b flex items-center justify-between hover:bg-gray-50 cursor-pointer">
+                    <div class="flex items-center">
+                        <i class="fas fa-history text-gray-400 mr-3"></i>
+                        <span class="text-sm text-gray-700">Riwayat Pesanan</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                
+                <div class="p-4 border-b flex items-center justify-between hover:bg-gray-50 cursor-pointer">
+                    <div class="flex items-center">
+                        <i class="fas fa-bell text-gray-400 mr-3"></i>
+                        <span class="text-sm text-gray-700">Notifikasi</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                
+                <div class="p-4 flex items-center justify-between hover:bg-gray-50 cursor-pointer">
+                    <div class="flex items-center">
+                        <i class="fas fa-cog text-gray-400 mr-3"></i>
+                        <span class="text-sm text-gray-700">Pengaturan</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+            </div>
+
+            <!-- Logout Button -->
+            <button onclick="logout()" class="w-full mt-6 bg-red-500 text-white py-3 rounded-xl font-bold hover:bg-red-600 transition">
+                <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+            </button>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bg-white border-t p-4 flex justify-around items-center sticky bottom-0 z-10">
+            <a href="dashboard.html" class="text-gray-400 hover:text-gray-600 flex flex-col items-center text-xs">
+                <i class="fas fa-home text-xl mb-1"></i> Home
+            </a>
+            <a href="#" onclick="alert('Fitur pencarian akan segera hadir!')" class="text-gray-400 hover:text-gray-600 flex flex-col items-center text-xs">
+                <i class="fas fa-search text-xl mb-1"></i> Cari
+            </a>
+            <a href="cart.html" class="text-gray-400 hover:text-gray-600 flex flex-col items-center text-xs relative">
+                <i class="fas fa-shopping-cart text-xl mb-1"></i> Keranjang
+                <span id="cart-badge" class="hidden absolute -top-1 right-0 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full text-center leading-4">0</span>
+            </a>
+            <a href="profile.html" class="text-green-600 flex flex-col items-center text-xs">
+                <i class="fas fa-user text-xl mb-1"></i> Profil
+            </a>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                localStorage.removeItem('wastewise_user');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

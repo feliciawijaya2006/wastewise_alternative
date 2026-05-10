@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lupa Kata Sandi</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .phone-frame {
+        width: 100%;
+        max-width: 375px;
+        height: 812px;
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .btn-primary {
+        background: #003d29;
+        color: white;
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 600;
+      }
+
+      .btn-primary:disabled {
+        background: #9ca3af;
+      }
+
+      .input-error {
+        border-color: #ef4444 !important;
+      }
+
+      .error-text {
+        color: #ef4444;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- HP CONTAINER -->
+    <div class="phone-frame">
+      <div class="flex items-center gap-4 mb-8">
+        <!-- BACK BUTTON -->
+        <button
+          onclick="history.back()"
+          class="w-10 h-10 rounded-full bg-[#f28a2c] flex items-center justify-center text-white text-xl shadow"
+        >
+          ‹
+        </button>
+
+        <!-- TITLE -->
+        <h1 class="text-2xl font-bold text-[#003d2b]">Lupa Kata Sandi</h1>
+      </div>
+      <p class="text-sm text-gray-500 mt-2 mb-10 flex items-center justify-center">
+        Masukkan email untuk reset password
+      </p>
+
+      <!-- FORM -->
+      <form id="forgotForm" class="space-y-4 flex-1">
+        <div>
+          <input
+            type="email"
+            id="email"
+            placeholder="Alamat Email"
+            class="w-full p-4 border rounded-xl outline-none"
+          />
+          <p id="emailError" class="error-text hidden">Email tidak valid</p>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-primary mt-6">
+          Kirim Link Reset
+        </button>
+
+        <p id="successMsg" class="text-green-600 text-sm mt-4 hidden">
+          Link reset telah dikirim ke email kamu
+        </p>
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById("forgotForm");
+      const emailInput = document.getElementById("email");
+      const emailError = document.getElementById("emailError");
+      const submitBtn = document.getElementById("submitBtn");
+      const successMsg = document.getElementById("successMsg");
+
+      function validateEmail(email) {
+        return email.includes("@") && email.includes(".");
+      }
+
+      function showError() {
+        emailInput.classList.add("input-error");
+        emailError.classList.remove("hidden");
+      }
+
+      function hideError() {
+        emailInput.classList.remove("input-error");
+        emailError.classList.add("hidden");
+      }
+
+      emailInput.addEventListener("input", () => {
+        if (validateEmail(emailInput.value.trim())) {
+          hideError();
+        }
+      });
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const email = emailInput.value.trim();
+        successMsg.classList.add("hidden");
+
+        if (!validateEmail(email)) {
+          showError();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Mengirim...";
+
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/forgot-password",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ email }),
+            },
+          );
+
+          if (response.ok) {
+            successMsg.classList.remove("hidden");
+            emailInput.value = "";
+          } else {
+            alert("Gagal mengirim email");
+          }
+        } catch (err) {
+          alert("Server error");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Kirim Link Reset";
+        }
+      });
+    </script>
+  </body>
+</html>

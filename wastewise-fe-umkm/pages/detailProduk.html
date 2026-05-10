@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+
+    <!-- FONT AWESOME -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: #f3f4f6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .phone-frame {
+        width: 100%;
+        max-width: 375px;
+        height: 812px;
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="phone-frame flex flex-col h-full">
+      <!-- HEADER -->
+      <div class="mt-2 mb-4">
+        <div class="flex items-center">
+          <!-- BACK BUTTON -->
+          <button
+            onclick="history.back()"
+            class="w-10 h-10 rounded-full bg-[#f28a2c] flex items-center justify-center text-white text-xl shadow"
+          >
+            ‹
+          </button>
+
+          <h1 class="text-2xl font-bold text-[#003d2b] ml-4">Detail Produk</h1>
+        </div>
+      </div>
+
+      <!-- IMAGE -->
+      <div class="relative mb-5">
+        <img
+          src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d"
+          class="w-full h-44 object-cover rounded-2xl"
+        />
+
+        <!-- overlay icon -->
+        <div
+          class="absolute inset-0 flex items-center justify-center bg-black/20 rounded-2xl"
+        >
+          <i class="fa fa-image text-white text-4xl"></i>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <div class=" space-y-4">
+        <!-- Nama -->
+        <div>
+          <label class="text-sm text-gray-700">Nama</label>
+          <input
+            type="text"
+            value="Nasi Goreng"
+            class="w-full mt-1 px-4 py-3 rounded-xl border shadow-sm outline-none focus:ring-2 focus:ring-green-800"
+          />
+        </div>
+
+        <!-- Harga -->
+        <div>
+          <label class="text-sm text-gray-700">Harga</label>
+          <div
+            class="flex mt-1 border rounded-xl shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-green-800"
+          >
+            <span class="px-4 flex items-center bg-gray-100">Rp</span>
+            <input
+              type="text"
+              value="20.000"
+              class="w-full px-4 py-3 outline-none"
+            />
+          </div>
+        </div>
+
+        <!-- Deskripsi -->
+        <div>
+          <label class="text-sm text-gray-700">Deskripsi</label>
+          <textarea
+            rows="3"
+            class="w-full mt-1 px-4 py-3 rounded-xl border shadow-sm outline-none focus:ring-2 focus:ring-green-800"
+          > Nasi goreng pakai minyak hainzEL</textarea
+          >
+        </div>
+
+        <!-- Stok -->
+        <div>
+          <label class="text-sm text-gray-700">Stok</label>
+          <div
+            class="flex mt-1 border rounded-xl shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-green-800"
+          >
+            <span class="px-4 flex items-center bg-gray-100">box</span>
+            <input
+              type="text"
+              value="10"
+              class="w-full px-4 py-3 outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- BUTTON -->
+      <div class="mt-4">
+        <button
+          class="w-full bg-[#003d2b] text-white py-4 rounded-2xl text-lg font-semibold shadow"
+        >
+          Simpan
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

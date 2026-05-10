@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+
+    <!-- Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .login-container {
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+        padding: 35px 25px;
+      }
+
+      .btn-primary {
+        background: #003d29;
+        color: white;
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: 0.2s;
+      }
+
+      .btn-primary:hover {
+        background: #005c3f;
+      }
+
+      .btn-primary:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+      }
+
+      .input-error {
+        border-color: #ef4444 !important;
+      }
+
+      .error-text {
+        color: #ef4444;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .illustration img {
+        width: 200px;
+        margin: 0 auto 25px;
+        display: block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="login-container">
+      <h1 class="text-2xl font-bold text-[#003d2b]">Masuk</h1>
+      <p class="text-sm text-gray-500 mb-6">
+        Selamat datang, silahkan masuk 👋
+      </p>
+
+      <div class="illustration">
+        <img src="../assets/images/login.png" alt="Login" />
+      </div>
+
+      <form id="loginForm" class="space-y-4">
+        <!-- PHONE -->
+        <div>
+          <div
+            id="phoneWrapper"
+            class="flex items-center w-full p-4 border rounded-xl bg-white"
+          >
+            <div class="flex items-center gap-2 pr-6 mr-6 border-r">
+              <img src="https://flagcdn.com/w20/id.png" class="w-5" />
+              <span class="text-sm font-semibold">+62</span>
+            </div>
+
+            <input
+              type="text"
+              id="phone"
+              placeholder="Nomor Handphone"
+              class="w-full outline-none text-sm"
+            />
+          </div>
+          <p id="phoneError" class="error-text hidden">
+            Nomor harus angka & minimal 10 digit
+          </p>
+        </div>
+
+        <!-- PASSWORD -->
+        <div>
+          <div
+            id="passwordWrapper"
+            class="flex items-center w-full p-4 border rounded-xl bg-white"
+          >
+            <input
+              type="password"
+              id="password"
+              placeholder="Kata sandi"
+              class="w-full outline-none text-sm"
+            />
+
+            <span
+              onclick="togglePassword(this)"
+              class="cursor-pointer text-gray-400"
+            >
+              <i class="fa-solid fa-eye"></i>
+            </span>
+          </div>
+          <p id="passwordError" class="error-text hidden">
+            Password minimal 6 karakter
+          </p>
+        </div>
+
+        <!-- FORGOT -->
+        <div class="text-right">
+          <a
+            href="lupakatasandi.html"
+            class="text-xs text-green-600 font-semibold"
+          >
+            Lupa kata sandi?
+          </a>
+        </div>
+
+        <!-- BUTTON -->
+        <button type="submit" id="loginButton" class="btn-primary">
+          Masuk
+        </button>
+      </form>
+
+      <!-- DIVIDER -->
+      <div class="flex items-center text-center text-xs text-gray-400 my-6">
+        <div class="flex-1 h-px bg-gray-200"></div>
+        <span class="px-2">Atau masuk dengan</span>
+        <div class="flex-1 h-px bg-gray-200"></div>
+      </div>
+
+      <!-- SOCIAL LOGIN -->
+      <div class="flex justify-center gap-4 mb-6">
+        <button
+          onclick="socialLogin('google')"
+          class="w-16 h-12 border rounded-lg hover:scale-105 transition"
+        >
+          <i class="fab fa-google text-[#EA4335]"></i>
+        </button>
+
+        <button
+          onclick="socialLogin('facebook')"
+          class="w-16 h-12 border rounded-lg hover:scale-105 transition"
+        >
+          <i class="fab fa-facebook-f text-[#1877F2]"></i>
+        </button>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="text-center text-sm text-gray-500">
+        Belum punya akun?
+        <a href="signup.html" class="text-green-600 font-semibold">Daftar</a>
+      </div>
+    </div>
+
+    <script>
+      // toggle password
+      function togglePassword(el) {
+        const input = document.getElementById("password");
+        const icon = el.querySelector("i");
+
+        if (input.type === "password") {
+          input.type = "text";
+          icon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+          input.type = "password";
+          icon.classList.replace("fa-eye-slash", "fa-eye");
+        }
+      }
+
+      // ambil elemen
+      const form = document.getElementById("loginForm");
+      const phoneInput = document.getElementById("phone");
+      const passwordInput = document.getElementById("password");
+
+      const phoneError = document.getElementById("phoneError");
+      const passwordError = document.getElementById("passwordError");
+
+      const phoneWrapper = document.getElementById("phoneWrapper");
+      const passwordWrapper = document.getElementById("passwordWrapper");
+
+      const loginButton = document.getElementById("loginButton");
+
+      // validasi
+      function validatePhone(phone) {
+        const regex = /^[0-9]+$/;
+        return regex.test(phone) && phone.length >= 10;
+      }
+
+      function validatePassword(password) {
+        return password.length >= 6;
+      }
+
+      function showError(wrapper, errorEl) {
+        wrapper.classList.add("input-error");
+        errorEl.classList.remove("hidden");
+      }
+
+      function hideError(wrapper, errorEl) {
+        wrapper.classList.remove("input-error");
+        errorEl.classList.add("hidden");
+      }
+
+      // realtime
+      phoneInput.addEventListener("input", () => {
+        if (validatePhone(phoneInput.value.trim())) {
+          hideError(phoneWrapper, phoneError);
+        }
+      });
+
+      passwordInput.addEventListener("input", () => {
+        if (validatePassword(passwordInput.value.trim())) {
+          hideError(passwordWrapper, passwordError);
+        }
+      });
+
+      // submit
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const phone = phoneInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        let isValid = true;
+
+        if (!validatePhone(phone)) {
+          showError(phoneWrapper, phoneError);
+          isValid = false;
+        }
+
+        if (!validatePassword(password)) {
+          showError(passwordWrapper, passwordError);
+          isValid = false;
+        }
+
+        if (!isValid) return;
+
+        // loading
+        loginButton.disabled = true;
+        loginButton.innerText = "Memproses...";
+
+        try {
+          const response = await fetch("http://localhost:3000/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ phone, password }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            if (data.token) {
+              localStorage.setItem("token", data.token);
+            }
+
+            alert("Login berhasil!");
+            window.location.href = "dashboard.html";
+          } else {
+            alert(data.message || "Login gagal");
+          }
+        } catch (error) {
+          alert("Tidak bisa terhubung ke server");
+        } finally {
+          loginButton.disabled = false;
+          loginButton.innerText = "Masuk";
+        }
+      });
+    </script>
+  </body>
+</html>
