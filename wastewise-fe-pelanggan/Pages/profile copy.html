@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - WasteWise</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#003D2B',
+                        accent: '#EF8030',
+                        danger: '#F44336'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+        
+        body {
+            background: #F8F9FA;
+        }
+        
+        .phone-container {
+            max-width: 375px;
+            min-height: 812px;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+        }
+        
+        .menu-item {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #F3F4F6;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .menu-item:hover {
+            background: #F8F9FA;
+        }
+        
+        .input-field {
+            border: 1px solid #D1D5DB;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .input-field:focus {
+            border-color: #003D2B;
+        }
+        
+        .input-field:disabled {
+            background: #F3F4F6;
+            color: #9CA3AF;
+            cursor: not-allowed;
+        }
+        
+        .input-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 4px;
+            display: block;
+        }
+        /* Skeleton shimmer */
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="phone-container">
+
+        <!-- ========== VIEW 1: PROFILE MENU ========== -->
+        <div id="view-profile-menu">
+            <div class="px-5 pt-12 pb-4 border-b sticky top-0 bg-white z-10">
+                <h1 class="text-2xl font-bold text-gray-800">Profil</h1>
+            </div>
+
+            <div class="p-5 border-b">
+                <div class="text-center">
+                    <div class="w-24 h-24 bg-green-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+                        <i class="fas fa-user text-4xl text-green-600"></i>
+                    </div>
+
+                    <!-- Skeletons shown while API loads -->
+                    <div id="display-name-skeleton" class="skeleton h-6 w-32 mx-auto mb-2"></div>
+                    <div id="display-phone-skeleton" class="skeleton h-4 w-28 mx-auto"></div>
+
+                    <!-- Real data — hidden until API responds -->
+                    <h2 class="text-xl font-bold text-gray-800 hidden" id="display-name"></h2>
+                    <p class="text-sm text-gray-500 hidden" id="display-phone"></p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl mx-5 mt-5 overflow-hidden shadow-sm">
+                <div class="menu-item" onclick="showEditProfile()">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-user-edit text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Edit Profil</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <div class="menu-item" onclick="window.location.href='history.html'">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-history text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Riwayat Pesanan</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <div class="menu-item">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-bell text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Notifikasi</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <div class="menu-item">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-cog text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Pengaturan</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+            </div>
+
+            <!-- API error banner -->
+            <div id="profile-error" class="hidden mx-5 mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 flex items-center gap-2">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="profile-error-text"></span>
+            </div>
+
+            <div class="p-5">
+                <!-- logout() is defined in app.js → calls POST /api/logout first ✓ -->
+                <button onclick="logout()" class="w-full bg-danger text-white py-4 rounded-xl font-bold hover:bg-red-600 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i><span>Keluar</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ========== VIEW 2: EDIT PROFILE ========== -->
+        <div id="view-edit-profile" class="hidden">
+            <div class="px-5 pt-12 pb-4 border-b sticky top-0 bg-white z-10">
+                <div class="flex items-center gap-4">
+                    <button onclick="showProfileMenu()" class="text-gray-800">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <h1 class="text-2xl font-bold text-gray-800">Edit Profil</h1>
+                </div>
+            </div>
+
+            <div class="p-5 pb-24">
+                <div class="text-center mb-8">
+                    <div class="relative inline-block">
+                        <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-3 overflow-hidden flex items-center justify-center">
+                            <i class="fas fa-user text-4xl text-gray-400"></i>
+                        </div>
+                        <button class="absolute bottom-0 right-0 w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center shadow-lg">
+                            <i class="fas fa-pen text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="input-label">Nama</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-user text-accent flex-shrink-0"></i>
+                            <input type="text" id="edit-name" class="input-field" placeholder="Nama lengkap" />
+                        </div>
+                        <p id="edit-name-error" class="text-xs text-red-500 mt-1 hidden"></p>
+                    </div>
+
+                    <div>
+                        <label class="input-label">Alamat</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-map-marker-alt text-accent flex-shrink-0"></i>
+                            <input type="text" id="edit-address" class="input-field" placeholder="Alamat lengkap" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="input-label">Email</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-accent flex-shrink-0"></i>
+                            <input type="email" id="edit-email" class="input-field" placeholder="email@contoh.com" />
+                        </div>
+                        <p id="edit-email-error" class="text-xs text-red-500 mt-1 hidden"></p>
+                    </div>
+
+                    <div>
+                        <label class="input-label">Nomor Telepon</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-phone text-accent flex-shrink-0"></i>
+                            <!-- Phone is read-only: changing it requires OTP verification -->
+                            <input type="tel" id="edit-phone" class="input-field" disabled />
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Untuk mengubah nomor, hubungi dukungan.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <button id="save-btn" onclick="saveProfile()" class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        Simpan Perubahan
+                    </button>
+                </div>
+
+                <div class="mt-4">
+                    <button onclick="logout()" class="w-full bg-danger text-white py-4 rounded-xl font-bold hover:bg-red-600 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i><span>Keluar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t px-6 py-4 flex justify-between items-center z-20">
+            <a href="dashboard.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-[10px] font-medium">Beranda</span>
+            </a>
+            <a href="cart.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition relative">
+                <i class="fas fa-shopping-bag text-xl"></i>
+                <span class="text-[10px] font-medium">Keranjang</span>
+                <span id="cart-badge" class="hidden absolute -top-1 right-2 bg-red-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            </a>
+            <a href="history.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-receipt text-xl"></i>
+                <span class="text-[10px] font-medium">Histori</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-primary transition">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-[10px] font-medium">Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- app.js MUST load before inline script: provides requireAuth, fetchProfile, updateProfile, logout, showToast -->
+    <script src="../js/app.js"></script>
+
+    <script>
+        // ── In-memory cache of the API response ────────────────
+        // Avoids a second GET /api/me when opening the edit form.
+        var _cachedProfile = null;
+
+        // ── BOOT ───────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function() {
+            requireAuth(); // from app.js — kicks out if no token
+            initProfilePage(); // fetch from API
+        });
+
+        // ── LOAD PROFILE FROM API ──────────────────────────────
+        // ✅ FIX: was reading localStorage → now calls GET /api/me
+        async function initProfilePage() {
+            var user = await fetchProfile(); // app.js → GET /api/me
+
+            if (!user) {
+                showProfileError('Gagal memuat data profil. Periksa koneksi Anda.');
+                return;
+            }
+
+            _cachedProfile = user;
+            renderProfileMenu(user);
+        }
+
+        function renderProfileMenu(user) {
+            document.getElementById('display-name-skeleton').classList.add('hidden');
+            document.getElementById('display-phone-skeleton').classList.add('hidden');
+
+            var nameEl = document.getElementById('display-name');
+            var phoneEl = document.getElementById('display-phone');
+
+            nameEl.textContent = user.name || '–';
+            phoneEl.textContent = user.phone || '–';
+
+            nameEl.classList.remove('hidden');
+            phoneEl.classList.remove('hidden');
+        }
+
+        function showProfileError(message) {
+            document.getElementById('display-name-skeleton').classList.add('hidden');
+            document.getElementById('display-phone-skeleton').classList.add('hidden');
+            var banner = document.getElementById('profile-error');
+            document.getElementById('profile-error-text').textContent = message;
+            banner.classList.remove('hidden');
+        }
+
+        // ── VIEW SWITCHING ─────────────────────────────────────
+
+        function showEditProfile() {
+            if (!_cachedProfile) {
+                showToast('Data profil belum tersedia.', 'error');
+                return;
+            }
+
+            document.getElementById('edit-name').value = _cachedProfile.name || '';
+            document.getElementById('edit-address').value = _cachedProfile.address || '';
+            document.getElementById('edit-email').value = _cachedProfile.email || '';
+            document.getElementById('edit-phone').value = _cachedProfile.phone || '';
+
+            ['edit-name-error', 'edit-email-error'].forEach(function(id) {
+                document.getElementById(id).classList.add('hidden');
+            });
+
+            document.getElementById('view-profile-menu').classList.add('hidden');
+            document.getElementById('view-edit-profile').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function showProfileMenu() {
+            document.getElementById('view-edit-profile').classList.add('hidden');
+            document.getElementById('view-profile-menu').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        // ── SAVE PROFILE ───────────────────────────────────────
+        // ✅ FIX: was writing localStorage only → now calls PUT /api/me
+        async function saveProfile() {
+            var name = document.getElementById('edit-name').value.trim();
+            var address = document.getElementById('edit-address').value.trim();
+            var email = document.getElementById('edit-email').value.trim();
+
+            var valid = true;
+
+            if (name.length < 3) {
+                showFieldError('edit-name-error', 'Nama minimal 3 karakter');
+                valid = false;
+            } else {
+                hideFieldError('edit-name-error');
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showFieldError('edit-email-error', 'Email tidak valid');
+                valid = false;
+            } else {
+                hideFieldError('edit-email-error');
+            }
+
+            if (!valid) return;
+
+            var btn = document.getElementById('save-btn');
+            btn.disabled = true;
+            btn.textContent = 'Menyimpan…';
+
+            var result = await updateProfile({
+                name: name,
+                address: address,
+                email: email
+            });
+
+            btn.disabled = false;
+            btn.textContent = 'Simpan Perubahan';
+
+            if (result.ok) {
+                _cachedProfile = Object.assign({}, _cachedProfile, {
+                    name: name,
+                    address: address,
+                    email: email
+                });
+                renderProfileMenu(_cachedProfile);
+                showToast('Profil berhasil diperbarui!', 'success');
+                showProfileMenu();
+                return;
+            }
+
+            if (result.status === 422 && result.data.errors) {
+                if (result.data.errors.name) showFieldError('edit-name-error', result.data.errors.name[0]);
+                if (result.data.errors.email) showFieldError('edit-email-error', result.data.errors.email[0]);
+                return;
+            }
+
+            showToast(result.data.message || 'Gagal menyimpan. Coba lagi.', 'error');
+        }
+
+        function showFieldError(id, message) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = message;
+            el.classList.remove('hidden');
+        }
+
+        function hideFieldError(id) {
+            var el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        }
+
+        // NOTE: logout() comes from app.js — it calls POST /api/logout
+        // before clearing localStorage, then redirects to ../index.html ✓
+    </script>
+</body>
+
+</html>

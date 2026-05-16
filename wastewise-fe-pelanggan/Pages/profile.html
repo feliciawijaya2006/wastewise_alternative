@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil - WasteWise</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -16,17 +17,32 @@
                     colors: {
                         primary: '#003D2B',
                         accent: '#EF8030',
-                        danger: '#F44336',
+                        danger: '#F44336'
                     }
                 }
             }
         }
     </script>
-    
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Inter", sans-serif; }
-        body { background: #F8F9FA; }
-        .phone-container { max-width: 375px; min-height: 812px; margin: 0 auto; background: white; position: relative; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+        
+        body {
+            background: #F8F9FA;
+        }
+        
+        .phone-container {
+            max-width: 375px;
+            min-height: 812px;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+        }
         
         .menu-item {
             padding: 16px;
@@ -56,262 +72,736 @@
             border-color: #003D2B;
         }
         
+        .input-field:disabled {
+            background: #F3F4F6;
+            color: #9CA3AF;
+            cursor: not-allowed;
+        }
+        
+        .input-field.error {
+            border-color: #EF4444;
+        }
+        
         .input-label {
             font-size: 12px;
             color: #6B7280;
             margin-bottom: 4px;
             display: block;
         }
+        /* Skeleton shimmer */
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        /* Avatar */
+        
+        .avatar-img {
+            width: 96px;
+            height: 96px;
+            border-radius: 9999px;
+            object-fit: cover;
+            border: 3px solid #E5E7EB;
+        }
+        
+        .avatar-placeholder {
+            width: 96px;
+            height: 96px;
+            border-radius: 9999px;
+            background: #D1FAE5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Photo upload modal */
+        
+        #photo-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.55);
+            align-items: flex-end;
+            justify-content: center;
+        }
+        
+        #photo-modal.open {
+            display: flex;
+        }
+        
+        .modal-sheet {
+            background: white;
+            width: 100%;
+            max-width: 375px;
+            border-radius: 24px 24px 0 0;
+            padding: 24px 20px 32px;
+            animation: slideUp 0.25s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        /* Drop-zone */
+        
+        #drop-zone {
+            border: 2px dashed #D1D5DB;
+            border-radius: 16px;
+            padding: 28px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        
+        #drop-zone.dragover,
+        #drop-zone:hover {
+            border-color: #003D2B;
+            background: #F0FDF4;
+        }
+        /* Preview inside modal */
+        
+        #photo-preview-wrap {
+            display: none;
+        }
+        
+        #photo-preview-wrap img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 9999px;
+            border: 3px solid #E5E7EB;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            border-top-color: white;
+            border-radius: 9999px;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
-<body>
 
-<div class="phone-container">
-    <!-- ========== VIEW 1: PROFILE MENU (Default) ========== -->
-    <div id="view-profile-menu">
-        <!-- Header (Tanpa Back Button) -->
-        <div class="px-5 pt-12 pb-4 border-b sticky top-0 bg-white z-10">
-            <h1 class="text-2xl font-bold text-gray-800">Profil</h1>
-        </div>
-        
-        <!-- Profile Info -->
-        <div class="p-5 border-b">
-            <div class="text-center">
-                <div class="w-24 h-24 bg-green-100 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <i class="fas fa-user text-4xl text-green-600"></i>
-                </div>
-                <h2 class="text-xl font-bold text-gray-800" id="display-name">Leonard</h2>
-                <p class="text-sm text-gray-500" id="display-phone">081234567890</p>
-            </div>
-        </div>
-        
-        <!-- Menu Items -->
-        <div class="bg-white rounded-2xl mx-5 mt-5 overflow-hidden shadow-sm">
-            <div class="menu-item" onclick="showEditProfile()">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-user-edit text-gray-400"></i>
-                    <span class="text-sm text-gray-700">Edit Profil</span>
-                </div>
-                <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-            </div>
-            
-            <div class="menu-item" onclick="window.location.href='history.html'">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-history text-gray-400"></i>
-                    <span class="text-sm text-gray-700">Riwayat Pesanan</span>
-                </div>
-                <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-            </div>
-            
-            <div class="menu-item">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-bell text-gray-400"></i>
-                    <span class="text-sm text-gray-700">Notifikasi</span>
-                </div>
-                <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-            </div>
-            
-            <div class="menu-item">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-cog text-gray-400"></i>
-                    <span class="text-sm text-gray-700">Pengaturan</span>
-                </div>
-                <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-            </div>
-        </div>
-        
-        <!-- Logout Button -->
-        <div class="p-5">
-            <button onclick="logout()" class="w-full bg-danger text-white py-4 rounded-xl font-bold hover:bg-red-600 transition flex items-center justify-center gap-2">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Keluar</span>
-            </button>
-        </div>
-    </div>
-    
-    <!-- ========== VIEW 2: EDIT PROFILE (Hidden by default) ========== -->
-    <div id="view-edit-profile" class="hidden">
-        <!-- Header (Dengan Back Button untuk kembali ke menu profil) -->
-        <div class="px-5 pt-12 pb-4 border-b sticky top-0 bg-white z-10">
-            <div class="flex items-center gap-4">
-                <button onclick="showProfileMenu()" class="text-gray-800">
-                    <i class="fas fa-arrow-left text-xl"></i>
-                </button>
+<body>
+    <div class="phone-container">
+
+        <!-- ══════════════════════════════════════════
+         VIEW 1: PROFILE MENU
+    ══════════════════════════════════════════ -->
+        <div id="view-profile-menu">
+            <div class="px-5 pt-12 pb-4 border-b sticky top-0 bg-white z-10">
                 <h1 class="text-2xl font-bold text-gray-800">Profil</h1>
             </div>
-        </div>
-        
-        <!-- Content -->
-        <div class="p-5 pb-24">
-            <!-- Profile Photo -->
-            <div class="text-center mb-8">
-                <div class="relative inline-block">
-                    <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-3 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Profile" class="w-full h-full object-cover">
+
+            <div class="p-5 border-b">
+                <div class="text-center">
+
+                    <!-- Avatar area — shows skeleton, then real photo or icon placeholder -->
+                    <div class="relative inline-block mb-3">
+                        <!-- Skeleton (shown while loading) -->
+                        <div id="avatar-skeleton" class="skeleton w-24 h-24 rounded-full mx-auto"></div>
+
+                        <!-- Real photo (shown when user has a photo_url) -->
+                        <img id="display-avatar-img" class="avatar-img hidden mx-auto" src="" alt="Foto Profil" onerror="this.classList.add('hidden'); document.getElementById('display-avatar-icon').classList.remove('hidden');">
+
+                        <!-- Icon placeholder (shown when no photo) -->
+                        <div id="display-avatar-icon" class="avatar-placeholder hidden mx-auto">
+                            <i class="fas fa-user text-4xl text-green-600"></i>
+                        </div>
                     </div>
-                    <button class="absolute bottom-0 right-0 w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center shadow-lg">
+
+                    <!-- Skeletons for name / phone -->
+                    <div id="display-name-skeleton" class="skeleton h-6 w-32 mx-auto mb-2"></div>
+                    <div id="display-phone-skeleton" class="skeleton h-4 w-28 mx-auto"></div>
+
+                    <!-- Real data (hidden until API responds) -->
+                    <h2 class="text-xl font-bold text-gray-800 hidden" id="display-name"></h2>
+                    <p class="text-sm text-gray-500 hidden" id="display-phone"></p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl mx-5 mt-5 overflow-hidden shadow-sm">
+                <div class="menu-item" onclick="showEditProfile()">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-user-edit text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Edit Profil</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <div class="menu-item" onclick="window.location.href='history.html'">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-history text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Riwayat Pesanan</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <div class="menu-item">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-bell text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Notifikasi</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <div class="menu-item">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-cog text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Pengaturan</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+            </div>
+
+            <!-- API error banner -->
+            <div id="profile-error" class="hidden mx-5 mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 flex items-center gap-2">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="profile-error-text"></span>
+            </div>
+
+            <div class="p-5">
+                <button onclick="logout()" class="w-full bg-danger text-white py-4 rounded-xl font-bold hover:bg-red-600 transition flex items-center justify-center gap-2">
+                <i class="fas fa-sign-out-alt"></i><span>Keluar</span>
+            </button>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+         VIEW 2: EDIT PROFILE
+    ══════════════════════════════════════════ -->
+        <div id="view-edit-profile" class="hidden">
+            <div class="px-5 pt-12 pb-4 border-b sticky top-0 bg-white z-10">
+                <div class="flex items-center gap-4">
+                    <button onclick="showProfileMenu()" class="text-gray-800">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                    <h1 class="text-2xl font-bold text-gray-800">Edit Profil</h1>
+                </div>
+            </div>
+
+            <div class="p-5 pb-24">
+
+                <!-- ── Avatar with edit button ── -->
+                <div class="text-center mb-8">
+                    <div class="relative inline-block">
+
+                        <!-- Real photo (shown when has photo) -->
+                        <img id="edit-avatar-img" class="avatar-img hidden mx-auto" src="" alt="Foto Profil" onerror="this.classList.add('hidden'); document.getElementById('edit-avatar-icon').classList.remove('hidden');">
+
+                        <!-- Icon placeholder (shown when no photo) -->
+                        <div id="edit-avatar-icon" class="avatar-placeholder hidden mx-auto">
+                            <i class="fas fa-user text-4xl text-gray-400"></i>
+                        </div>
+
+                        <!-- Uploading spinner overlay -->
+                        <div id="edit-avatar-spinner" class="hidden absolute inset-0 bg-black/40 rounded-full flex items-center justify-center">
+                            <div class="spinner"></div>
+                        </div>
+
+                        <!-- Edit (pen) button -->
+                        <button id="edit-photo-btn" onclick="openPhotoModal()" title="Ubah foto profil" class="absolute bottom-0 right-0 w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center shadow-lg hover:bg-accent/90 transition">
                         <i class="fas fa-pen text-xs"></i>
                     </button>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2">Ketuk ikon pena untuk mengganti foto</p>
                 </div>
-            </div>
-            
-            <!-- Form Fields -->
-            <div class="space-y-4">
-                <div>
-                    <label class="input-label">Nama</label>
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-user text-accent"></i>
-                        <input type="text" id="edit-name" class="input-field" value="LeoNard W.">
+
+                <!-- ── Form fields ── -->
+                <div class="space-y-4">
+
+                    <!-- Nama -->
+                    <div>
+                        <label class="input-label">Nama</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-user text-accent flex-shrink-0"></i>
+                            <input type="text" id="edit-name" class="input-field" placeholder="Nama lengkap" />
+                        </div>
+                        <p id="edit-name-error" class="text-xs text-red-500 mt-1 hidden"></p>
+                    </div>
+
+                    <!-- Alamat -->
+                    <div>
+                        <label class="input-label">Alamat</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-map-marker-alt text-accent flex-shrink-0"></i>
+                            <input type="text" id="edit-address" class="input-field" placeholder="Alamat lengkap (opsional)" />
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="input-label">Email</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-accent flex-shrink-0"></i>
+                            <input type="email" id="edit-email" class="input-field" placeholder="email@contoh.com" />
+                        </div>
+                        <p id="edit-email-error" class="text-xs text-red-500 mt-1 hidden"></p>
+                    </div>
+
+                    <!-- Phone (read-only) -->
+                    <div>
+                        <label class="input-label">Nomor Telepon</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-phone text-accent flex-shrink-0"></i>
+                            <input type="tel" id="edit-phone" class="input-field" disabled />
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Nomor telepon tidak dapat diubah.</p>
                     </div>
                 </div>
-                
-                <div>
-                    <label class="input-label">Alamat</label>
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-map-marker-alt text-accent"></i>
-                        <input type="text" id="edit-address" class="input-field" value="Kompleks Makassar, Sulawesi Selatan">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="input-label">Email</label>
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-envelope text-accent"></i>
-                        <input type="email" id="edit-email" class="input-field" value="leonard@gmail.com">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="input-label">Nomor Telepon</label>
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-phone text-accent"></i>
-                        <input type="tel" id="edit-phone" class="input-field" value="+62 812-7777-9999">
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Save Button -->
-            <div class="mt-8">
-                <button onclick="saveProfile()" class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition">
-                    Simpan Perubahan
+
+                <!-- ── Save button ── -->
+                <div class="mt-8">
+                    <button id="save-btn" onclick="saveProfile()" class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    <span id="save-btn-text">Simpan Perubahan</span>
                 </button>
-            </div>
-            
-            <!-- Logout Button -->
-            <div class="mt-4">
-                <button onclick="logout()" class="w-full bg-danger text-white py-4 rounded-xl font-bold hover:bg-red-600 transition flex items-center justify-center gap-2">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Log Out</span>
+                </div>
+
+                <div class="mt-4">
+                    <button onclick="logout()" class="w-full bg-danger text-white py-4 rounded-xl font-bold hover:bg-red-600 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i><span>Keluar</span>
                 </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t px-6 py-4 flex justify-between items-center z-20">
+            <a href="dashboard.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-[10px] font-medium">Beranda</span>
+            </a>
+            <a href="cart.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition relative">
+                <i class="fas fa-shopping-bag text-xl"></i>
+                <span class="text-[10px] font-medium">Keranjang</span>
+                <span id="cart-badge" class="hidden absolute -top-1 right-2 bg-red-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            </a>
+            <a href="history.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-receipt text-xl"></i>
+                <span class="text-[10px] font-medium">Riwayat</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-primary transition">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-[10px] font-medium">Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+     PHOTO UPLOAD MODAL (bottom sheet)
+══════════════════════════════════════════ -->
+    <div id="photo-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-sheet">
+            <div class="flex justify-between items-center mb-5">
+                <h2 id="modal-title" class="text-lg font-bold text-gray-800">Ganti Foto Profil</h2>
+                <button onclick="closePhotoModal()" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+            </div>
+
+            <!-- Drop-zone / click-to-browse -->
+            <div id="drop-zone" onclick="document.getElementById('photo-file-input').click()">
+                <i class="fas fa-cloud-upload-alt text-4xl text-gray-300 mb-3 block"></i>
+                <p class="text-sm font-semibold text-gray-600">Ketuk untuk memilih foto</p>
+                <p class="text-xs text-gray-400 mt-1">Format JPG · Maks. 2 MB</p>
+            </div>
+
+            <!-- Hidden real file input — jpg only -->
+            <input type="file" id="photo-file-input" accept="image/jpeg,image/jpg" class="hidden" onchange="handlePhotoSelected(event)">
+
+            <!-- Error message — sits OUTSIDE preview-wrap so it is always visible
+             regardless of whether a preview has been shown yet.
+             BUG FIX: was inside #photo-preview-wrap (display:none by default),
+             so client-side validation errors (wrong type / too large) and
+             server errors were completely invisible. -->
+            <p id="photo-modal-error" class="text-xs text-red-500 mt-3 text-center hidden"></p>
+
+            <!-- Preview area (hidden until a file is chosen) -->
+            <div id="photo-preview-wrap" class="mt-4 text-center">
+                <img id="photo-preview-img" src="" alt="Preview foto" />
+                <p id="photo-preview-name" class="text-xs text-gray-500 mt-2"></p>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="mt-6 flex gap-3">
+                <button onclick="closePhotoModal()" class="flex-1 border border-gray-200 text-gray-600 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 transition">
+                Batal
+            </button>
+                <button id="modal-upload-btn" onclick="confirmPhotoUpload()" disabled class="flex-1 bg-primary text-white py-3 rounded-xl font-semibold text-sm hover:bg-primary/90 transition disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                <span id="modal-upload-btn-text">Simpan Foto</span>
+            </button>
             </div>
         </div>
     </div>
-    
-    <!-- Bottom Navigation -->
-    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t px-6 py-4 flex justify-between items-center z-20">
-        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
-            <i class="fas fa-home text-xl"></i>
-            <span class="text-[10px] font-medium">Beranda</span>
-        </a>
-        <a href="cart.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition relative">
-            <i class="fas fa-shopping-bag text-xl"></i>
-            <span class="text-[10px] font-medium">Keranjang</span>
-            <span id="cart-badge" class="hidden absolute -top-1 right-2 bg-red-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
-        </a>
-        <a href="history.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
-            <i class="fas fa-receipt text-xl"></i>
-            <span class="text-[10px] font-medium">Histori</span>
-        </a>
-        <a href="profile.html" class="flex flex-col items-center gap-1 text-primary transition">
-            <i class="fas fa-user text-xl"></i>
-            <span class="text-[10px] font-medium">Profil</span>
-        </a>
-    </div>
-</div>
 
-<script src="../js/app.js"></script>
+    <!-- app.js MUST load before inline script -->
+    <script src="../js/app.js"></script>
 
-<script>
-// ========== PROFILE DATA ==========
+    <script>
+        // ══════════════════════════════════════════════════════
+        //  STATE
+        // ══════════════════════════════════════════════════════
+        var _cachedProfile = null; // API response from GET /api/me
+        var _pendingPhotoFile = null; // File object waiting to be uploaded
 
-let userProfile = {
-    name: 'Leonard',
-    phone: '081234567890',
-    address: 'Kompleks Makassar, Sulawesi Selatan',
-    email: 'leonard@gmail.com',
-    fullPhone: '+62 812-7777-9999'
-};
+        // ══════════════════════════════════════════════════════
+        //  BOOT
+        // ══════════════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', function() {
+            requireAuth(); // app.js — redirects if no token
+            initProfilePage();
 
-// Load profile data on page load
-document.addEventListener('DOMContentLoaded', function() {
-    loadProfileData();
-});
+            // Close modal when tapping the dark overlay
+            document.getElementById('photo-modal').addEventListener('click', function(e) {
+                if (e.target === this) closePhotoModal();
+            });
 
-function loadProfileData() {
-    // Try to load from localStorage
-    const savedProfile = localStorage.getItem('wastewise_profile');
-    if (savedProfile) {
-        userProfile = JSON.parse(savedProfile);
-    }
-    
-    // Update display
-    document.getElementById('display-name').textContent = userProfile.name;
-    document.getElementById('display-phone').textContent = userProfile.phone;
-    
-    // Update form fields
-    document.getElementById('edit-name').value = userProfile.name;
-    document.getElementById('edit-address').value = userProfile.address;
-    document.getElementById('edit-email').value = userProfile.email;
-    document.getElementById('edit-phone').value = userProfile.fullPhone;
-}
+            // Drag-and-drop on drop-zone
+            var dz = document.getElementById('drop-zone');
+            dz.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dz.classList.add('dragover');
+            });
+            dz.addEventListener('dragleave', function() {
+                dz.classList.remove('dragover');
+            });
+            dz.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dz.classList.remove('dragover');
+                var files = e.dataTransfer.files;
+                if (files && files[0]) applyPhotoFile(files[0]);
+            });
+        });
 
-// ========== VIEW SWITCHING ==========
+        // ══════════════════════════════════════════════════════
+        //  LOAD PROFILE
+        // ══════════════════════════════════════════════════════
+        async function initProfilePage() {
+            var user = await fetchProfile(); // app.js → GET /api/me
 
-function showEditProfile() {
-    document.getElementById('view-profile-menu').classList.add('hidden');
-    document.getElementById('view-edit-profile').classList.remove('hidden');
-    window.scrollTo(0, 0);
-}
+            if (!user) {
+                showProfileError('Gagal memuat data profil. Periksa koneksi Anda.');
+                return;
+            }
 
-function showProfileMenu() {
-    document.getElementById('view-edit-profile').classList.add('hidden');
-    document.getElementById('view-profile-menu').classList.remove('hidden');
-    loadProfileData(); // Reload data
-    window.scrollTo(0, 0);
-}
+            _cachedProfile = user;
+            renderProfileMenu(user);
+        }
 
-// ========== SAVE PROFILE ==========
+        function renderProfileMenu(user) {
+            // Hide skeletons
+            document.getElementById('avatar-skeleton').classList.add('hidden');
+            document.getElementById('display-name-skeleton').classList.add('hidden');
+            document.getElementById('display-phone-skeleton').classList.add('hidden');
 
-function saveProfile() {
-    // Get values from form
-    userProfile.name = document.getElementById('edit-name').value;
-    userProfile.address = document.getElementById('edit-address').value;
-    userProfile.email = document.getElementById('edit-email').value;
-    userProfile.fullPhone = document.getElementById('edit-phone').value;
-    
-    // Save to localStorage
-    localStorage.setItem('wastewise_profile', JSON.stringify(userProfile));
-    
-    // Show success message
-    alert('Profil berhasil diperbarui!');
-    
-    // Go back to profile menu
-    showProfileMenu();
-}
+            // Render avatar
+            setAvatarDisplay('display-avatar-img', 'display-avatar-icon', user.photo_url);
 
-// ========== LOGOUT ==========
+            // Render name / phone
+            var nameEl = document.getElementById('display-name');
+            var phoneEl = document.getElementById('display-phone');
+            nameEl.textContent = user.name || '–';
+            phoneEl.textContent = user.phone || '–';
+            nameEl.classList.remove('hidden');
+            phoneEl.classList.remove('hidden');
+        }
 
-function logout() {
-    if (confirm('Apakah Anda yakin ingin keluar?')) {
-        // Clear user data
-        localStorage.removeItem('wastewise_user');
-        localStorage.removeItem('wastewise_profile');
-        
-        // Redirect to login
-        window.location.href = 'index.html';
-    }
-}
-</script>
+        /**
+         * setAvatarDisplay(imgId, iconId, photoUrl)
+         * Shows the <img> if photoUrl is truthy, otherwise shows the icon placeholder.
+         */
+        function setAvatarDisplay(imgId, iconId, photoUrl) {
+            var imgEl = document.getElementById(imgId);
+            var iconEl = document.getElementById(iconId);
+
+            if (photoUrl) {
+                imgEl.src = photoUrl;
+                imgEl.classList.remove('hidden');
+                iconEl.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+                iconEl.classList.remove('hidden');
+            }
+        }
+
+        function showProfileError(message) {
+            document.getElementById('avatar-skeleton').classList.add('hidden');
+            document.getElementById('display-name-skeleton').classList.add('hidden');
+            document.getElementById('display-phone-skeleton').classList.add('hidden');
+            document.getElementById('display-avatar-icon').classList.remove('hidden');
+
+            var banner = document.getElementById('profile-error');
+            document.getElementById('profile-error-text').textContent = message;
+            banner.classList.remove('hidden');
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  VIEW SWITCHING
+        // ══════════════════════════════════════════════════════
+        function showEditProfile() {
+            if (!_cachedProfile) {
+                showToast('Data profil belum tersedia.', 'error');
+                return;
+            }
+
+            // Populate form
+            document.getElementById('edit-name').value = _cachedProfile.name || '';
+            document.getElementById('edit-address').value = _cachedProfile.address || '';
+            document.getElementById('edit-email').value = _cachedProfile.email || '';
+            document.getElementById('edit-phone').value = _cachedProfile.phone || '';
+
+            // Set edit-view avatar
+            setAvatarDisplay('edit-avatar-img', 'edit-avatar-icon', _cachedProfile.photo_url);
+
+            // Clear validation errors
+            hideFieldError('edit-name-error');
+            hideFieldError('edit-email-error');
+
+            document.getElementById('view-profile-menu').classList.add('hidden');
+            document.getElementById('view-edit-profile').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function showProfileMenu() {
+            document.getElementById('view-edit-profile').classList.add('hidden');
+            document.getElementById('view-profile-menu').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  SAVE PROFILE (name, email, address)
+        // ══════════════════════════════════════════════════════
+        async function saveProfile() {
+            var name = document.getElementById('edit-name').value.trim();
+            var address = document.getElementById('edit-address').value.trim();
+            var email = document.getElementById('edit-email').value.trim();
+
+            hideFieldError('edit-name-error');
+            hideFieldError('edit-email-error');
+            document.getElementById('edit-name').classList.remove('error');
+            document.getElementById('edit-email').classList.remove('error');
+
+            var valid = true;
+
+            if (name.length < 3) {
+                showFieldError('edit-name-error', 'Nama minimal 3 karakter');
+                document.getElementById('edit-name').classList.add('error');
+                valid = false;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showFieldError('edit-email-error', 'Email tidak valid');
+                document.getElementById('edit-email').classList.add('error');
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            var btn = document.getElementById('save-btn');
+            var btnText = document.getElementById('save-btn-text');
+            btn.disabled = true;
+            btnText.innerHTML = '<span class="spinner"></span> Menyimpan…';
+
+            var result = await updateProfile({
+                name: name,
+                address: address,
+                email: email
+            });
+
+            btn.disabled = false;
+            btnText.textContent = 'Simpan Perubahan';
+
+            if (result.ok) {
+                // Merge into cache — preserves photo_url which we didn't send in PUT
+                _cachedProfile = Object.assign({}, _cachedProfile, {
+                    name: result.data.name || name,
+                    email: result.data.email || email,
+                    address: result.data.address !== undefined ? result.data.address : address,
+                });
+                renderProfileMenu(_cachedProfile);
+                showToast('Profil berhasil diperbarui!', 'success');
+                showProfileMenu();
+                return;
+            }
+
+            if (result.status === 422 && result.data.errors) {
+                if (result.data.errors.name) {
+                    showFieldError('edit-name-error', result.data.errors.name[0]);
+                    document.getElementById('edit-name').classList.add('error');
+                }
+                if (result.data.errors.email) {
+                    showFieldError('edit-email-error', result.data.errors.email[0]);
+                    document.getElementById('edit-email').classList.add('error');
+                }
+                return;
+            }
+
+            showToast(result.data.message || 'Gagal menyimpan. Coba lagi.', 'error');
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  PHOTO MODAL
+        // ══════════════════════════════════════════════════════
+        function openPhotoModal() {
+            _pendingPhotoFile = null;
+            document.getElementById('photo-file-input').value = '';
+            document.getElementById('photo-preview-wrap').style.display = 'none';
+            document.getElementById('drop-zone').style.display = 'block';
+            document.getElementById('modal-upload-btn').disabled = true;
+            document.getElementById('modal-upload-btn-text').textContent = 'Simpan Foto';
+            hideFieldError('photo-modal-error');
+
+            document.getElementById('photo-modal').classList.add('open');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photo-modal').classList.remove('open');
+            _pendingPhotoFile = null;
+        }
+
+        /** Called by <input onchange="..."> */
+        function handlePhotoSelected(event) {
+            var file = event.target.files[0];
+            if (file) applyPhotoFile(file);
+        }
+
+        /**
+         * Validates the chosen file and shows the preview.
+         * Accepts only jpg/jpeg, max 2 MB.
+         * BUG FIX: previously called showFieldError on #photo-modal-error which was
+         * INSIDE #photo-preview-wrap (display:none) → error was completely invisible.
+         * Now #photo-modal-error is outside that wrapper so it is always rendered.
+         */
+        function applyPhotoFile(file) {
+            hideFieldError('photo-modal-error');
+
+            // Type check — accept only jpg/jpeg by MIME type (matches server-side mimetypes rule)
+            var allowedTypes = ['image/jpeg', 'image/jpg', 'image/pjpeg'];
+            if (!allowedTypes.includes(file.type)) {
+                showFieldError('photo-modal-error', 'Hanya file JPG/JPEG yang diperbolehkan.');
+                document.getElementById('modal-upload-btn').disabled = true;
+                return;
+            }
+
+            // Size check — max 2 MB (matches server-side max:2048)
+            if (file.size > 2 * 1024 * 1024) {
+                showFieldError('photo-modal-error', 'Ukuran file maksimal 2 MB.');
+                document.getElementById('modal-upload-btn').disabled = true;
+                return;
+            }
+
+            _pendingPhotoFile = file;
+
+            // Show preview, hide the drop-zone
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('photo-preview-img').src = e.target.result;
+                document.getElementById('photo-preview-name').textContent =
+                    file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+                document.getElementById('photo-preview-wrap').style.display = 'block';
+                document.getElementById('drop-zone').style.display = 'none';
+                document.getElementById('modal-upload-btn').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /** Called when user taps "Simpan Foto" in the modal */
+        async function confirmPhotoUpload() {
+            if (!_pendingPhotoFile) return;
+
+            var btn = document.getElementById('modal-upload-btn');
+            var btnText = document.getElementById('modal-upload-btn-text');
+            btn.disabled = true;
+            btnText.innerHTML = '<span class="spinner"></span> Mengunggah…';
+
+            // Show spinner overlay on the avatar in the edit view
+            document.getElementById('edit-avatar-spinner').classList.remove('hidden');
+
+            // Hide any previous error before the new attempt
+            hideFieldError('photo-modal-error');
+
+            var result = await uploadPhoto(_pendingPhotoFile); // defined in app.js
+
+            // Always restore button and hide spinner — whether success or error
+            document.getElementById('edit-avatar-spinner').classList.add('hidden');
+            btn.disabled = false;
+            btnText.textContent = 'Simpan Foto';
+
+            if (result.ok && result.data && result.data.photo_url) {
+                var newUrl = result.data.photo_url;
+
+                // Update in-memory cache so the menu view re-renders correctly
+                _cachedProfile = Object.assign({}, _cachedProfile, {
+                    photo_url: newUrl
+                });
+
+                // Update avatar in BOTH views — no page reload needed
+                setAvatarDisplay('edit-avatar-img', 'edit-avatar-icon', newUrl);
+                setAvatarDisplay('display-avatar-img', 'display-avatar-icon', newUrl);
+
+                closePhotoModal();
+                showToast('Foto profil berhasil diperbarui!', 'success');
+                return;
+            }
+
+            // BUG FIX: When Laravel returns a 500 HTML debug page (APP_DEBUG=true),
+            // response.json() fails in the uploadPhoto catch block and returns {data:{}}.
+            // data.message is then undefined → we must always supply a non-empty fallback.
+            // The error is shown in #photo-modal-error which is now OUTSIDE #photo-preview-wrap
+            // so it is always visible regardless of whether a preview was ever shown.
+            var errMsg = (result.data && result.data.message) ?
+                result.data.message :
+                'Gagal mengunggah foto. Coba lagi.';
+
+            // If server returned field-level validation errors (422), extract the photo error.
+            if (result.status === 422 && result.data && result.data.errors && result.data.errors.photo) {
+                errMsg = result.data.errors.photo[0];
+            }
+
+            showFieldError('photo-modal-error', errMsg);
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  FIELD ERROR HELPERS
+        // ══════════════════════════════════════════════════════
+        function showFieldError(id, message) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = message;
+            el.classList.remove('hidden');
+        }
+
+        function hideFieldError(id) {
+            var el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        }
+
+        // NOTE: logout() is defined in app.js
+    </script>
 
 </body>
+
 </html>

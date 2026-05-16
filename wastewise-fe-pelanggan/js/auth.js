@@ -1,340 +1,376 @@
-// ========== TOGGLE PASSWORD ==========
-function togglePassword(el) {
-  const input = el.parentElement.querySelector("input");
-  const icon = el.querySelector("i");
+/**
+ * auth.js — WasteWise Pelanggan
+ * Scope: login, register, logout, toggle UI.
+ * Loaded by: index.html (root) and Pages/signup.html
+ *
+ * FIX LOG:
+ *  - saveSession() no longer redirects (was causing double-redirect loop)
+ *  - handleRegister() redirect uses '../index.html' (correct for /Pages/ depth)
+ *  - socialRegister() added so signup.html buttons don't crash
+ */
 
-  if (!input || !icon) return;
+const API_BASE_URL = "http://localhost:8000/api";
 
-  if (input.type === "password") {
-    input.type = "text";
-    icon.classList.replace("fa-eye", "fa-eye-slash");
-  } else {
-    input.type = "password";
-    icon.classList.replace("fa-eye-slash", "fa-eye");
-  }
+// ─────────────────────────────────────────────
+// 1. SESSION HELPERS
+// ─────────────────────────────────────────────
+
+function saveSession(token, user) {
+    localStorage.setItem('ww_token', token);
+    if (user) {
+        localStorage.setItem('ww_user', JSON.stringify(user));
+    }
+    // ✅ FIX 1: Redirect REMOVED from here.
+    // saveSession() stores data only. One redirect fires per flow
+    // from the caller (handleLogin / handleRegister), never two.
 }
 
-// ========== SOCIAL LOGIN ==========
-function socialLogin(provider) {
-  alert(`Login dengan ${provider} akan segera tersedia!`);
+function getToken() {
+    return localStorage.getItem('ww_token');
 }
 
-// ========== SOCIAL REGISTER ==========
-function socialRegister(provider) {
-  alert(`Daftar dengan ${provider} akan segera tersedia!`);
+function clearSession() {
+    localStorage.removeItem('ww_token');
+    localStorage.removeItem('ww_user');
 }
 
-// ========== VALIDATION FUNCTIONS ==========
+// ─────────────────────────────────────────────
+// 2. CENTRAL FETCH WRAPPER
+// ─────────────────────────────────────────────
+
+async function apiFetch(endpoint, options = {}) {
+    const token = getToken();
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    };
+
+    if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
+    }
+
+    if (options.headers) {
+        Object.assign(headers, options.headers);
+    }
+
+    try {
+        const response = await fetch(API_BASE_URL + endpoint, {
+            ...options,
+            headers: headers
+        });
+
+        const data = await response.json().catch(function() { return {}; });
+        return { ok: response.ok, status: response.status, data: data };
+
+    } catch (err) {
+        console.error('Network error:', err);
+        return {
+            ok: false,
+            status: 0,
+            data: { message: 'Tidak dapat terhubung ke server. Coba lagi.' }
+        };
+    }
+}
+
+// ─────────────────────────────────────────────
+// 3. UI UTILITIES
+// ─────────────────────────────────────────────
+
+function showError(elementId, message) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove('hidden');
+}
+
+function hideError(elementId) {
+    const el = document.getElementById(elementId);
+    if (el) el.classList.add('hidden');
+}
+
+function setFieldError(wrapperId, hasError) {
+    const el = document.getElementById(wrapperId);
+    if (!el) return;
+    if (hasError) {
+        el.classList.add('input-error', 'border-red-400');
+    } else {
+        el.classList.remove('input-error', 'border-red-400');
+    }
+}
+
+function setButtonLoading(buttonId, loading) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
+    btn.disabled = loading;
+    if (loading) {
+        btn.dataset.originalText = btn.textContent;
+        btn.textContent = 'Memuat…';
+    } else {
+        btn.textContent = btn.dataset.originalText || btn.textContent;
+    }
+}
+
+// ─────────────────────────────────────────────
+// 4. VALIDATION
+// ─────────────────────────────────────────────
+
 function validatePhone(phone) {
-  const regex = /^[0-9]+$/;
-  return regex.test(phone) && phone.length >= 10 && phone.length <= 13;
+    const digits = phone.trim().replace(/\D/g, '');
+    return digits.length >= 10 && digits.length <= 15;
 }
 
 function validatePassword(password) {
-  return password.length >= 6;
+    return password.length >= 6;
 }
 
 function validateEmail(email) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
 function validateName(name) {
-  return name.trim().length >= 3;
+    return name.trim().length >= 3;
 }
 
-function showError(wrapper, errorEl) {
-  if (wrapper) wrapper.classList.add("input-error");
-  if (errorEl) errorEl.classList.remove("hidden");
+function formatPhone(rawPhone) {
+    const digits = rawPhone.trim().replace(/\D/g, '');
+    return digits.startsWith('0') ? digits : '0' + digits;
 }
 
-function hideError(wrapper, errorEl) {
-  if (wrapper) wrapper.classList.remove("input-error");
-  if (errorEl) errorEl.classList.add("hidden");
-}
+// ─────────────────────────────────────────────
+// 5. LOGIN HANDLER
+// Loaded by: index.html (root level)
+// Redirect target: 'Pages/dashboard.html' ← relative to root ✓
+// ─────────────────────────────────────────────
 
-// ========== WAIT FOR DOM LOADED ==========
-document.addEventListener("DOMContentLoaded", function () {
-  
-  // ========== LOGIN FORM (index.html di ROOT) ==========
-  const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    const phoneInput = document.getElementById("phone");
-    const passwordInput = document.getElementById("password");
-    const phoneWrapper = document.getElementById("phoneWrapper");
-    const passwordWrapper = document.getElementById("passwordWrapper");
-    const phoneError = document.getElementById("phoneError");
-    const passwordError = document.getElementById("passwordError");
-    const loginButton = document.getElementById("loginButton");
+async function handleLogin(event) {
+    event.preventDefault();
 
-    // Real-time validation: Phone (only numbers)
-    if (phoneInput) {
-      phoneInput.addEventListener("input", function () {
-        this.value = this.value.replace(/[^0-9]/g, "");
-        if (validatePhone(this.value.trim())) {
-          hideError(phoneWrapper, phoneError);
-        }
-      });
+    const rawPhone = document.getElementById('phone').value.trim();
+    const password = document.getElementById('password').value;
+
+    hideError('phoneError');
+    hideError('passwordError');
+    setFieldError('phoneWrapper', false);
+    setFieldError('passwordWrapper', false);
+
+    let valid = true;
+
+    if (!validatePhone(rawPhone)) {
+        showError('phoneError', 'Nomor harus angka & minimal 10 digit');
+        setFieldError('phoneWrapper', true);
+        valid = false;
     }
 
-    // Real-time validation: Password
-    if (passwordInput) {
-      passwordInput.addEventListener("input", function () {
-        if (validatePassword(this.value.trim())) {
-          hideError(passwordWrapper, passwordError);
-        }
-      });
+    if (!validatePassword(password)) {
+        showError('passwordError', 'Password minimal 6 karakter');
+        setFieldError('passwordWrapper', true);
+        valid = false;
     }
 
-    // Submit handler
-    loginForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
+    if (!valid) return;
 
-      const phone = phoneInput.value.trim();
-      const password = passwordInput.value.trim();
+    setButtonLoading('loginButton', true);
 
-      let isValid = true;
-
-      if (!validatePhone(phone)) {
-        showError(phoneWrapper, phoneError);
-        isValid = false;
-      } else {
-        hideError(phoneWrapper, phoneError);
-      }
-
-      if (!validatePassword(password)) {
-        showError(passwordWrapper, passwordError);
-        isValid = false;
-      } else {
-        hideError(passwordWrapper, passwordError);
-      }
-
-      if (!isValid) return;
-
-      // Loading state
-      loginButton.disabled = true;
-      const originalButtonText = loginButton.innerText;
-      loginButton.innerText = "Memproses...";
-
-      try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Simpan data user ke localStorage
-        const userData = {
-          phone: phone,
-          isLoggedIn: true,
-          loginTime: new Date().toISOString(),
-          name: "Pelanggan",
-        };
-
-        localStorage.setItem("wastewise_pelanggan_user", JSON.stringify(userData));
-
-        alert("Login berhasil!");
-        
-        // ✅ REDIRECT ke dashboard (ada di folder Pages)
-        window.location.href = "Pages/dashboard.html";
-        
-      } catch (error) {
-        console.error("Login error:", error);
-        alert("Terjadi kesalahan. Silakan coba lagi.");
-      } finally {
-        loginButton.disabled = false;
-        loginButton.innerText = originalButtonText;
-      }
+    const result = await apiFetch('/login', {
+        method: 'POST',
+        body: JSON.stringify({ phone: formatPhone(rawPhone), password: password })
     });
-  }
 
-  // ========== SIGNUP FORM (Pages/signup.html) ==========
-  const signupForm = document.getElementById("signupForm");
-  if (signupForm) {
-    const nameInput = document.getElementById("name");
-    const phoneInput = document.getElementById("phone");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const confirmPasswordInput = document.getElementById("confirmPassword");
+    setButtonLoading('loginButton', false);
 
-    const phoneWrapper = document.getElementById("phoneWrapper");
-    const passwordWrapper = document.getElementById("passwordWrapper");
-    const confirmPasswordWrapper = document.getElementById("confirmPasswordWrapper");
+    const { ok, status, data } = result;
 
-    const nameError = document.getElementById("nameError");
-    const phoneError = document.getElementById("phoneError");
-    const emailError = document.getElementById("emailError");
-    const passwordError = document.getElementById("passwordError");
-    const confirmPasswordError = document.getElementById("confirmPasswordError");
-
-    const signupButton = document.getElementById("signupButton");
-
-    // Real-time validation: Phone
-    if (phoneInput) {
-      phoneInput.addEventListener("input", function () {
-        this.value = this.value.replace(/[^0-9]/g, "");
-        if (validatePhone(this.value.trim())) {
-          hideError(phoneWrapper, phoneError);
-        }
-      });
-    }
-
-    // Real-time validation: Password
-    if (passwordInput) {
-      passwordInput.addEventListener("input", function () {
-        if (validatePassword(this.value.trim())) {
-          hideError(passwordWrapper, passwordError);
-        }
-        // Check password match
-        if (confirmPasswordInput.value && passwordInput.value !== confirmPasswordInput.value) {
-          showError(confirmPasswordWrapper, confirmPasswordError);
-        } else {
-          hideError(confirmPasswordWrapper, confirmPasswordError);
-        }
-      });
-    }
-
-    // Real-time validation: Confirm Password
-    if (confirmPasswordInput) {
-      confirmPasswordInput.addEventListener("input", function () {
-        if (this.value !== passwordInput.value) {
-          showError(confirmPasswordWrapper, confirmPasswordError);
-        } else {
-          hideError(confirmPasswordWrapper, confirmPasswordError);
-        }
-      });
-    }
-
-    // Submit handler
-    signupForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const name = nameInput.value.trim();
-      const phone = phoneInput.value.trim();
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-      const confirmPassword = confirmPasswordInput.value.trim();
-
-      let isValid = true;
-
-      if (!validateName(name)) {
-        showError(null, nameError);
-        isValid = false;
-      } else {
-        hideError(null, nameError);
-      }
-
-      if (!validatePhone(phone)) {
-        showError(phoneWrapper, phoneError);
-        isValid = false;
-      } else {
-        hideError(phoneWrapper, phoneError);
-      }
-
-      if (!validateEmail(email)) {
-        showError(null, emailError);
-        isValid = false;
-      } else {
-        hideError(null, emailError);
-      }
-
-      if (!validatePassword(password)) {
-        showError(passwordWrapper, passwordError);
-        isValid = false;
-      } else {
-        hideError(passwordWrapper, passwordError);
-      }
-
-      if (password !== confirmPassword) {
-        showError(confirmPasswordWrapper, confirmPasswordError);
-        isValid = false;
-      } else {
-        hideError(confirmPasswordWrapper, confirmPasswordError);
-      }
-
-      if (!isValid) return;
-
-      // Loading state
-      signupButton.disabled = true;
-      const originalButtonText = signupButton.innerText;
-      signupButton.innerText = "Mendaftar...";
-
-      try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Save to localStorage
-        const userData = {
-          name: name,
-          phone: phone,
-          email: email,
-          isLoggedIn: true,
-          registerTime: new Date().toISOString(),
-        };
-
-        localStorage.setItem("wastewise_pelanggan_user", JSON.stringify(userData));
-
-        alert("Pendaftaran berhasil! Silakan login.");
-        
-        // ✅ REDIRECT ke index.html (ada di ROOT)
-        window.location.href = "../index.html";
-        
-      } catch (error) {
-        console.error("Signup error:", error);
-        alert("Terjadi kesalahan. Silakan coba lagi.");
-      } finally {
-        signupButton.disabled = false;
-        signupButton.innerText = originalButtonText;
-      }
-    });
-  }
-
-  // ========== FORGOT PASSWORD FORM (Pages/lupakatasandi.html) ==========
-  const forgotForm = document.getElementById("forgotForm");
-  if (forgotForm) {
-    const emailInput = document.getElementById("email");
-    const emailError = document.getElementById("emailError");
-    const submitBtn = document.getElementById("submitBtn");
-    const successMsg = document.getElementById("successMsg");
-
-    // Real-time validation: Email
-    if (emailInput) {
-      emailInput.addEventListener("input", function () {
-        if (validateEmail(this.value.trim())) {
-          hideError(null, emailError);
-        }
-      });
-    }
-
-    // Submit handler
-    forgotForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const email = emailInput.value.trim();
-      successMsg.classList.add("hidden");
-
-      if (!validateEmail(email)) {
-        showError(null, emailError);
+    if (ok && data.token) {
+        saveSession(data.token, data.user || {});
+        // ✅ FIX 1: Only ONE redirect here. saveSession() no longer redirects.
+        window.location.href = 'Pages/dashboard.html';
         return;
-      } else {
-        hideError(null, emailError);
-      }
+    }
 
-      // Loading state
-      submitBtn.disabled = true;
-      const originalButtonText = submitBtn.innerText;
-      submitBtn.innerText = "Mengirim...";
+    // 422 — validation error (e.g. wrong credentials via ValidationException)
+    if (status === 422 && data.errors) {
+        if (data.errors.phone) {
+            showError('phoneError', data.errors.phone[0]);
+            setFieldError('phoneWrapper', true);
+        }
+        if (data.errors.password) {
+            showError('passwordError', data.errors.password[0]);
+            setFieldError('passwordWrapper', true);
+        }
+        return;
+    }
 
-      try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+    // 401 — explicit unauthorized
+    if (status === 401) {
+        showError('phoneError', data.message || 'Nomor atau kata sandi salah.');
+        setFieldError('phoneWrapper', true);
+        return;
+    }
 
-        successMsg.classList.remove("hidden");
-        emailInput.value = "";
-      } catch (err) {
-        console.error("Forgot password error:", err);
-        alert("Gagal mengirim email reset password");
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerText = originalButtonText;
-      }
+    showError('phoneError', data.message || 'Terjadi kesalahan, coba lagi.');
+    setFieldError('phoneWrapper', true);
+}
+
+// ─────────────────────────────────────────────
+// 6. REGISTER HANDLER
+// Loaded by: Pages/signup.html (one level deep)
+// Redirect target: '../index.html' ← correct for /Pages/ depth ✓
+// ─────────────────────────────────────────────
+
+async function handleRegister(event) {
+    event.preventDefault();
+
+    const name = document.getElementById('name').value.trim();
+    const rawPhone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+
+    ['nameError', 'phoneError', 'emailError', 'passwordError', 'confirmPasswordError'].forEach(hideError);
+    ['phoneWrapper', 'passwordWrapper', 'confirmPasswordWrapper'].forEach(function(id) { setFieldError(id, false); });
+    if (nameInput) nameInput.classList.remove('border-red-400');
+    if (emailInput) emailInput.classList.remove('border-red-400');
+
+    let valid = true;
+
+    if (!validateName(name)) {
+        showError('nameError', 'Nama minimal 3 karakter');
+        if (nameInput) nameInput.classList.add('border-red-400');
+        valid = false;
+    }
+
+    if (!validatePhone(rawPhone)) {
+        showError('phoneError', 'Nomor harus angka & minimal 10 digit');
+        setFieldError('phoneWrapper', true);
+        valid = false;
+    }
+
+    if (!validateEmail(email)) {
+        showError('emailError', 'Email tidak valid');
+        if (emailInput) emailInput.classList.add('border-red-400');
+        valid = false;
+    }
+
+    if (!validatePassword(password)) {
+        showError('passwordError', 'Password minimal 6 karakter');
+        setFieldError('passwordWrapper', true);
+        valid = false;
+    }
+
+    if (password !== confirmPassword) {
+        showError('confirmPasswordError', 'Password tidak cocok');
+        setFieldError('confirmPasswordWrapper', true);
+        valid = false;
+    }
+
+    if (!valid) return;
+
+    setButtonLoading('signupButton', true);
+
+    const result = await apiFetch('/register', {
+        method: 'POST',
+        body: JSON.stringify({
+            name: name,
+            phone: formatPhone(rawPhone),
+            email: email,
+            password: password,
+            password_confirmation: confirmPassword
+        })
     });
-  }
+
+    setButtonLoading('signupButton', false);
+
+    const { ok, status, data } = result;
+
+    if (ok && data.access_token) {
+        saveSession(data.access_token, data.user || {});
+        // ✅ FIX 2: '../index.html' is correct from Pages/signup.html
+        // After register, send user to login to confirm credentials.
+        alert('Pendaftaran berhasil! Silahkan masuk.');
+        window.location.href = '../index.html';
+        return;
+    }
+
+    if (status === 422 && data.errors) {
+        if (data.errors.name) { showError('nameError', data.errors.name[0]); if (nameInput) nameInput.classList.add('border-red-400'); }
+        if (data.errors.phone) {
+            showError('phoneError', data.errors.phone[0]);
+            setFieldError('phoneWrapper', true);
+        }
+        if (data.errors.email) { showError('emailError', data.errors.email[0]); if (emailInput) emailInput.classList.add('border-red-400'); }
+        if (data.errors.password) {
+            showError('passwordError', data.errors.password[0]);
+            setFieldError('passwordWrapper', true);
+        }
+        return;
+    }
+
+    showError('nameError', data.message || 'Terjadi kesalahan, coba lagi.');
+    if (nameInput) nameInput.classList.add('border-red-400');
+}
+
+// ─────────────────────────────────────────────
+// 7. TOGGLE PASSWORD VISIBILITY
+// Works for any password field inside a wrapper div
+// ─────────────────────────────────────────────
+
+function togglePassword(iconEl) {
+    const wrapper = iconEl.closest('div');
+    const input = wrapper ? wrapper.querySelector('input') : null;
+    if (!input) return;
+
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+
+    const icon = iconEl.querySelector('i');
+    if (icon) {
+        icon.classList.toggle('fa-eye', !isHidden);
+        icon.classList.toggle('fa-eye-slash', isHidden);
+    }
+}
+
+// ─────────────────────────────────────────────
+// 8. SOCIAL LOGIN / REGISTER PLACEHOLDERS
+// Both defined so no "undefined" crash on either page
+// ─────────────────────────────────────────────
+
+function socialLogin(provider) {
+    alert('Login dengan ' + provider + ' belum tersedia.');
+}
+
+function socialRegister(provider) {
+    // ✅ FIX 3: was missing → crash when Google/Facebook buttons clicked on signup.html
+    alert('Daftar dengan ' + provider + ' belum tersedia.');
+}
+
+// ─────────────────────────────────────────────
+// 9. ROUTE GUARD
+// Redirect already-logged-in users away from auth pages
+// ─────────────────────────────────────────────
+
+function redirectIfLoggedIn() {
+    const path = window.location.pathname;
+    const isAuthPage = path.endsWith('index.html') || path.endsWith('signup.html') || path === '/';
+
+    if (getToken() && isAuthPage) {
+        window.location.href = path.includes('/Pages/') ? 'dashboard.html' : 'Pages/dashboard.html';
+    }
+}
+
+// ─────────────────────────────────────────────
+// 10. BIND — everything starts here
+// ─────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', function() {
+    redirectIfLoggedIn();
+
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+
+    if (loginForm) loginForm.addEventListener('submit', handleLogin);
+    if (signupForm) signupForm.addEventListener('submit', handleRegister);
 });

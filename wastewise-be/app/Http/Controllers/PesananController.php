@@ -21,9 +21,11 @@ class PesananController extends Controller
             return response()->json(['message' => 'Unauthorized. Only pelanggan can view orders.'], 403);
         }
 
-        $pesanan = Pesanan::with(['detail.menu', 'resto'])
-            ->where('Plg', $user->KodeRestoPlg)
-            ->orderByDesc('Tgl')
+        // Fetch orders using the new user_id column safely
+        $pesanan = \App\Models\Pesanan::with(['detail.menu', 'resto'])
+            ->where('user_id', $user->id)
+            ->orderByDesc('Tgl')         // Sort by date instead of created_at
+            ->orderByDesc('NoUrutPesan') // Sort by order number for that specific date
             ->get()
             ->map(function ($p) {
                 return [
@@ -64,7 +66,8 @@ class PesananController extends Controller
     {
         $user = $request->user();
 
-        if ($user->Restoran) {
+        // Check the new role column, not legacy properties
+        if ($user->role !== 'pelanggan') {
             return response()->json(['message' => 'Unauthorized. Only pelanggan can place orders.'], 403);
         }
 
@@ -78,7 +81,6 @@ class PesananController extends Controller
         ]);
 
         DB::transaction(function () use ($request, $user) {
-            // Count existing orders today for this resto to get NoUrutPesan
             $urutToday = Pesanan::where('KodeResto', $request->KodeResto)
                 ->whereDate('Tgl', today())
                 ->count() + 1;
@@ -86,44 +88,25 @@ class PesananController extends Controller
             $pesanan = Pesanan::create([
                 'NoPesanan'   => $request->NoPesanan,
                 'Tgl'         => today(),
-                'Plg'         => $user->KodeRestoPlg,
+                'user_id'     => $user->id, // ← Uses the standard user ID now
                 'KodeResto'   => $request->KodeResto,
-                'Status'      => 0, // 0 = pending
+                'Status'      => 0, 
                 'NoUrutPesan' => $urutToday,
             ]);
 
             foreach ($request->items as $item) {
-                PesananDet::create([
+                // Ensure you have a PesananDet model that matches this
+                \App\Models\PesananDet::create([
                     'NoPesanan' => $pesanan->NoPesanan,
                     'Kode'      => $item['Kode'],
                     'Jumlah'    => $item['Jumlah'],
                     'Harga'     => $item['Harga'],
                 ]);
             }
-
-            $this->createdPesanan = $pesanan->load('detail.menu', 'resto');
         });
 
-        $p = $this->createdPesanan;
-
         return response()->json([
-            'message' => 'Pesanan created successfully.',
-            'data'    => [
-                'NoPesanan'   => $p->NoPesanan,
-                'Tgl'         => $p->Tgl,
-                'KodeResto'   => $p->KodeResto,
-                'NamaResto'   => $p->resto?->Nama,
-                'Status'      => $p->Status,
-                'NoUrutPesan' => $p->NoUrutPesan,
-                'detail'      => $p->detail->map(fn($d) => [
-                    'KodeMenu' => $d->Kode,
-                    'NamaMenu' => $d->menu?->NamaMenu,
-                    'Jumlah'   => $d->Jumlah,
-                    'Harga'    => $d->Harga,
-                    'Subtotal' => $d->Jumlah * $d->Harga,
-                ]),
-                'Total' => $p->detail->sum(fn($d) => $d->Jumlah * $d->Harga),
-            ],
+            'message' => 'Pesanan created successfully.'
         ], 201);
     }
 

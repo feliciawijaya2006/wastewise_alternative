@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - WasteWise</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -21,7 +22,7 @@
             }
         }
     </script>
-    
+
     <style>
         * {
             margin: 0;
@@ -41,13 +42,13 @@
             background: white;
             border-radius: 40px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             position: relative;
         }
         
         .tenant-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
         
         .search-input:focus {
@@ -55,227 +56,223 @@
         }
     </style>
 </head>
+
 <body>
 
-<div class="phone-container">
-    <!-- Header -->
-    <div class="bg-white px-5 pt-12 pb-4 sticky top-0 z-10 border-b">
-        <div class="flex justify-between items-center mb-4">
-            <div>
-                <h1 class="text-2xl font-bold text-primary">Halo, Leonard! 👋</h1>
-                <p class="text-xs text-gray-500 mt-1">Selamat datang di WasteWise</p>
+    <div class="phone-container">
+        <!-- Header -->
+        <div class="bg-white px-5 pt-12 pb-4 sticky top-0 z-10 border-b">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-primary">Halo,<span id="user-greeting-name">...</span>! 👋</h1>
+                    <p class="text-xs text-gray-500 mt-1">Selamat datang di WasteWise</p>
+                </div>
+                <a href="notification.html" class="relative">
+                    <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center hover:bg-accent/90 transition">
+                        <i class="fas fa-bell text-white text-sm"></i>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></div>
+                </a>
             </div>
-            <a href="notification.html" class="relative">
-                <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center hover:bg-accent/90 transition">
-                    <i class="fas fa-bell text-white text-sm"></i>
+
+            <!-- Banner Carousel -->
+            <div class="bg-gradient-to-r from-primary to-[#005C3F] rounded-2xl p-4 text-white mb-4 cursor-pointer" onclick="alert('Promo: Hemat makanan, hemat bumi! 🌍')">
+                <p class="text-xs opacity-90 mb-1">💡 Fakta WasteWise</p>
+                <p class="text-xs opacity-90 font-medium">Jika makanan terbuang adalah negara, ia akan menjadi produsen CO₂ terbesar ke-3 di dunia.</p>
+                <div class="flex gap-1 mt-3">
+                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                    <div class="w-2 h-2 bg-white/50 rounded-full"></div>
+                    <div class="w-2 h-2 bg-white/50 rounded-full"></div>
                 </div>
-                <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></div>
-            </a>
-        </div>
-        
-        <!-- Banner Carousel -->
-        <div class="bg-gradient-to-r from-primary to-[#005C3F] rounded-2xl p-4 text-white mb-4 cursor-pointer" onclick="alert('Promo: Hemat makanan, hemat bumi! 🌍')">
-            <p class="text-xs opacity-90 mb-1">💡 Fakta WasteWise</p>
-            <p class="text-xs opacity-90 font-medium">Jika makanan terbuang adalah negara, ia akan menjadi produsen CO₂ terbesar ke-3 di dunia.</p>
-            <div class="flex gap-1 mt-3">
-                <div class="w-2 h-2 bg-white rounded-full"></div>
-                <div class="w-2 h-2 bg-white/50 rounded-full"></div>
-                <div class="w-2 h-2 bg-white/50 rounded-full"></div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="relative">
+                <input type="text" id="searchInput" placeholder="Cari tenant atau makanan..." class="search-input w-full bg-gray-100 rounded-xl py-3 pl-10 pr-4 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
             </div>
         </div>
-        
-        <!-- Search Bar -->
-        <div class="relative">
-            <input type="text" id="searchInput" placeholder="Cari tenant atau makanan..." 
-                   class="search-input w-full bg-gray-100 rounded-xl py-3 pl-10 pr-4 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition">
-            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-        </div>
-    </div>
-    
-    <!-- Content -->
-    <div class="px-5 pb-24">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-bold text-primary">Daftar Tenant</h2>
-            <a href="#" class="text-xs text-accent font-semibold hover:underline">Lihat Semua</a>
-        </div>
-        
-        <!-- Grid Tenant -->
-        <div class="grid grid-cols-2 gap-4" id="tenant-grid">
-            
-            <!-- Tenant 1: Warung AW -->
-            <a href="detail-tenant.html?tenant=warung-aw&name=Warung+AW&location=Kantin+UC+Makassar&rating=4.3&time=10" 
-               class="tenant-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition block group">
-                <div class="h-32 bg-gray-200 relative">
-                    <img src="../assets/images/nasigoreng.png" alt="Warung AW" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                         onerror="this.src='https://source.unsplash.com/300x200/?nasi,indonesian'">
-                    <div class="absolute top-2 right-2 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                        <i class="fas fa-star text-accent text-xs"></i>
-                        <span class="text-xs font-semibold text-gray-800">4.3</span>
-                    </div>
-                    <!-- Badge Hemat -->
-                    <div class="absolute top-2 left-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
-                        Hemat 70%
-                    </div>
-                </div>
-                <div class="p-3">
-                    <h3 class="font-bold text-sm text-gray-800 mb-1">Warung AW</h3>
-                    <div class="flex items-center gap-1 text-xs text-gray-500 mb-1">
-                        <i class="fas fa-map-marker-alt text-accent"></i>
-                        <span class="truncate">Kantin UC Makassar</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-[10px] text-gray-400">
-                        <span class="flex items-center gap-1"><i class="fas fa-clock"></i> 10 min</span>
-                        <span>•</span>
-                        <span class="text-green-600">Buka</span>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- Tenant 2: Chick on Cup -->
-            <a href="detail-tenant.html?tenant=chick-on-cup&name=Chick+on+Cup&location=Kantin+UC+Makassar&rating=4.5&time=15" 
-               class="tenant-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition block group">
-                <div class="h-32 bg-gray-200 relative">
-                    <img src="../assets/images/ayamgoreng.png" alt="Chick on Cup" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                         onerror="this.src='https://source.unsplash.com/300x200/?chicken,fried'">
-                    <div class="absolute top-2 right-2 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                        <i class="fas fa-star text-accent text-xs"></i>
-                        <span class="text-xs font-semibold text-gray-800">4.5</span>
-                    </div>
-                    <div class="absolute top-2 left-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
-                        Hemat 60%
-                    </div>
-                </div>
-                <div class="p-3">
-                    <h3 class="font-bold text-sm text-gray-800 mb-1">Chick on Cup</h3>
-                    <div class="flex items-center gap-1 text-xs text-gray-500 mb-1">
-                        <i class="fas fa-map-marker-alt text-accent"></i>
-                        <span class="truncate">Kantin UC Makassar</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-[10px] text-gray-400">
-                        <span class="flex items-center gap-1"><i class="fas fa-clock"></i> 15 min</span>
-                        <span>•</span>
-                        <span class="text-green-600">Buka</span>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- Tenant 3: Es Teh Indonesia -->
-            <a href="detail-tenant.html?tenant=es-teh&name=Es+Teh+Indonesia&location=Kantin+UC+Makassar&rating=4.2&time=5" 
-               class="tenant-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition block group">
-                <div class="h-32 bg-gray-200 relative">
-                    <img src="../assets/images/esteh.png" alt="Es Teh Indonesia" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                         onerror="this.src='https://source.unsplash.com/300x200/?tea,drink'">
-                    <div class="absolute top-2 right-2 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                        <i class="fas fa-star text-accent text-xs"></i>
-                        <span class="text-xs font-semibold text-gray-800">4.2</span>
-                    </div>
-                    <div class="absolute top-2 left-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
-                        Hemat 80%
-                    </div>
-                </div>
-                <div class="p-3">
-                    <h3 class="font-bold text-sm text-gray-800 mb-1">Es Teh Indonesia</h3>
-                    <div class="flex items-center gap-1 text-xs text-gray-500 mb-1">
-                        <i class="fas fa-map-marker-alt text-accent"></i>
-                        <span class="truncate">Kantin UC Makassar</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-[10px] text-gray-400">
-                        <span class="flex items-center gap-1"><i class="fas fa-clock"></i> 5 min</span>
-                        <span>•</span>
-                        <span class="text-green-600">Buka</span>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- Tenant 4: Bakso President -->
-            <a href="detail-tenant.html?tenant=bakso&name=Bakso+President&location=Kantin+UC+Makassar&rating=4.4&time=12" 
-               class="tenant-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition block group">
-                <div class="h-32 bg-gray-200 relative">
-                    <img src="../assets/images/nasigoreng.png" alt="Bakso President" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                         onerror="this.src='https://source.unsplash.com/300x200/?bakso,soup'">
-                    <div class="absolute top-2 right-2 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                        <i class="fas fa-star text-accent text-xs"></i>
-                        <span class="text-xs font-semibold text-gray-800">4.4</span>
-                    </div>
-                    <div class="absolute top-2 left-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
-                        Hemat 65%
-                    </div>
-                </div>
-                <div class="p-3">
-                    <h3 class="font-bold text-sm text-gray-800 mb-1">Bakso President</h3>
-                    <div class="flex items-center gap-1 text-xs text-gray-500 mb-1">
-                        <i class="fas fa-map-marker-alt text-accent"></i>
-                        <span class="truncate">Kantin UC Makassar</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-[10px] text-gray-400">
-                        <span class="flex items-center gap-1"><i class="fas fa-clock"></i> 12 min</span>
-                        <span>•</span>
-                        <span class="text-green-600">Buka</span>
-                    </div>
-                </div>
-            </a>
-            
-        </div>
-    </div>
-    
-    <!-- Bottom Navigation -->
-    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t px-6 py-4 flex justify-between items-center z-20 rounded-t-3xl shadow-lg">
-        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-primary">
-            <i class="fas fa-home text-xl"></i>
-            <span class="text-[10px] font-medium">Beranda</span>
-        </a>
-        <a href="cart.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition relative">
-            <i class="fas fa-shopping-bag text-xl"></i>
-            <span class="text-[10px] font-medium">Keranjang</span>
-            <span id="cart-badge" class="hidden absolute -top-1 right-2 bg-red-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center animate-bounce">0</span>
-        </a>
-        <a href="#" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
-            <i class="fas fa-receipt text-xl"></i>
-            <span class="text-[10px] font-medium">Riwayat</span>
-        </a>
-        <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
-            <i class="fas fa-user text-xl"></i>
-            <span class="text-[10px] font-medium">Profil</span>
-        </a>
-    </div>
-</div>
 
-<!-- ✅ Script path untuk file di folder Pages -->
-<script src="../js/app.js"></script>
+        <!-- Content -->
+        <div class="px-5 pb-24">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-primary">Daftar Tenant</h2>
+                <a href="#" class="text-xs text-accent font-semibold hover:underline">Lihat Semua</a>
+            </div>
 
-<!-- Search Functionality -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    const tenantCards = document.querySelectorAll('.tenant-card');
-    
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            const filter = e.target.value.toLowerCase().trim();
-            
-            tenantCards.forEach(card => {
-                const name = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                const location = card.querySelector('.fa-map-marker-alt')?.closest('div')?.textContent.toLowerCase() || '';
-                
-                if (name.includes(filter) || location.includes(filter)) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            <!-- Grid Tenant -->
+            <div class="grid grid-cols-2 gap-4" id="tenant-grid">
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t px-6 py-4 flex justify-between items-center z-20 rounded-t-3xl shadow-lg">
+            <a href="dashboard.html" class="flex flex-col items-center gap-1 text-primary">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-[10px] font-medium">Beranda</span>
+            </a>
+            <a href="cart.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition relative">
+                <i class="fas fa-shopping-bag text-xl"></i>
+                <span class="text-[10px] font-medium">Keranjang</span>
+                <span id="cart-badge" class="hidden absolute -top-1 right-2 bg-red-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center animate-bounce">0</span>
+            </a>
+            <a href="history.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-receipt text-xl"></i>
+                <span class="text-[10px] font-medium">Riwayat</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-[10px] font-medium">Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Search Functionality -->
+    <script src="../js/app.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Load the User's Name
+            loadUserGreeting();
+
+            // 2. Load the Tenants from Database
+            fetchTenants();
+
+            // 3. Update Cart Badge
+            if (typeof updateBadge === 'function') {
+                updateBadge();
+            }
         });
+
+        // --- GREETING LOGIC ---
+        async function loadUserGreeting() {
+            const greetingSpan = document.getElementById('user-greeting-name');
+            try {
+                // Request the user's profile from Laravel
+                const response = await apiFetch('/api/me');
+
+                // Assuming Laravel returns the user object directly or nested in 'data'
+                const user = response.data || response;
+
+                if (user && user.name) {
+                    // Extract first name for a friendlier greeting
+                    const firstName = user.name.split(' ')[0];
+                    greetingSpan.textContent = firstName;
+                } else {
+                    greetingSpan.textContent = 'Pelanggan';
+                }
+            } catch (error) {
+                console.error('Gagal mengambil data user:', error);
+                greetingSpan.textContent = 'Pelanggan';
+            }
+        }
+
+        // --- TENANT LOGIC ---
+        async function fetchTenants() {
+            const grid = document.getElementById('tenant-grid');
+            grid.innerHTML = '<p class="col-span-2 text-center text-gray-500 text-sm py-4">Memuat tenant...</p>';
+
+            try {
+                const response = await apiFetch('/api/tenants');
+
+                let tenants = [];
+                if (response.status === 'success' && response.data) {
+                    tenants = response.data;
+                } else if (Array.isArray(response)) {
+                    tenants = response;
+                }
+
+                renderTenants(tenants);
+
+            } catch (error) {
+                console.error('Error fetching tenants:', error);
+                grid.innerHTML = '<p class="col-span-2 text-center text-red-500 text-sm py-4">Gagal memuat daftar tenant.</p>';
+            }
+        }
+
+        function renderTenants(tenants) {
+            const grid = document.getElementById('tenant-grid');
+            grid.innerHTML = '';
+
+            if (!tenants || tenants.length === 0) {
+                grid.innerHTML = '<p class="col-span-2 text-center text-gray-500 text-sm py-4">Belum ada tenant yang tersedia.</p>';
+                return;
+            }
+
+            tenants.forEach(tenant => {
+                        // CRITICAL FIX: We must explicitly use KodeResto, NOT id!
+                        const id = tenant.KodeResto;
+                        const nama = tenant.Nama || 'Tenant Tanpa Nama';
+                        const lokasi = tenant.Alamat || 'Kantin UC Makassar';
+
+                        // Dynamic image with a safe fallback
+                        const imageUrl = tenant.foto_url || '../assets/images/default-food.png';
+                        const rating = tenant.rating || '0.0';
+                        const diskonStr = tenant.diskon ? `Hemat ${tenant.diskon}%` : '';
+                        const waktu = tenant.waktu_tunggu || '15';
+
+                        // Notice the href is securely injecting the ${id} variable we mapped above
+                        const cardHTML = `
+                <a href="detail-tenant.html?id=${id}" class="tenant-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition block group">
+                    <div class="h-32 bg-gray-200 relative">
+                        <img src="${imageUrl}" alt="${nama}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='../assets/images/nasigoreng.png'">                        
+                        <div class="absolute top-2 right-2 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+                            <i class="fas fa-star text-accent text-xs"></i>
+                            <span class="text-xs font-semibold text-gray-800">${rating}</span>
+                        </div>
+                        
+                        ${diskonStr ? `
+                        <div class="absolute top-2 left-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
+                            ${diskonStr}
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="p-3">
+                        <h3 class="font-bold text-sm text-gray-800 mb-1">${nama}</h3>
+                        <div class="flex items-center gap-1 text-xs text-gray-500 mb-1">
+                            <i class="fas fa-map-marker-alt text-accent"></i>
+                            <span class="truncate">${lokasi}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-[10px] text-gray-400">
+                            <span class="flex items-center gap-1"><i class="fas fa-clock"></i> ${waktu} min</span>
+                            <span>•</span>
+                            <span class="text-green-600">Buka</span>
+                        </div>
+                    </div>
+                </a>
+            `;
+            
+            grid.insertAdjacentHTML('beforeend', cardHTML);
+        });
+
+        // Re-attach search listener after elements exist
+        attachSearchListener();
     }
-    
-    // Update cart badge on load
-    if (typeof updateBadge === 'function') {
-        updateBadge();
-    }
-});
-</script>
+        function attachSearchListener() {
+            const searchInput = document.getElementById('searchInput');
+            const tenantCards = document.querySelectorAll('.tenant-card');
+
+            // Clone to remove old listeners to prevent bugs
+            const newSearchInput = searchInput.cloneNode(true);
+            searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+
+            newSearchInput.addEventListener('input', function(e) {
+                const filter = e.target.value.toLowerCase().trim();
+
+                tenantCards.forEach(card => {
+                    const nameEl = card.querySelector('h3');
+                    const locationEl = card.querySelector('.fa-map-marker-alt');
+                    const locWrapper = locationEl ? locationEl.closest('div') : null;
+
+                    const name = nameEl ? nameEl.textContent.toLowerCase() : '';
+                    const location = locWrapper ? locWrapper.textContent.toLowerCase() : '';
+
+                    card.style.display = (name.includes(filter) || location.includes(filter)) ? '' : 'none';
+                });
+            });
+        }
+    </script>
 
 </body>
+
 </html>

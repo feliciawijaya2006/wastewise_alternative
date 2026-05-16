@@ -1,9 +1,16 @@
 /**
  * app.js — WasteWise Pelanggan
  * Loaded by ALL protected pages: dashboard.html, profile.html, cart.html, history.html
+ *
+ * FIX LOG:
+ *  - fetchUserProfile() endpoint changed /api/user → /api/me (was 404)
+ *  - addToCart() visual feedback fixed: accepts buttonEl param, 'element' undefined removed
+ *  - apiFetch() never redirects (only requireAuth/logout navigate)
+ *  - logout() defined here so profile.html buttons work
+ *  - debug console.error removed
  */
 
-const API_BASE = 'http://localhost:8000'; // ← change once when deploying
+const API_BASE = 'http://localhost:8000/api'; // ← change once when deploying
 
 // ─────────────────────────────────────────────
 // 1. TOKEN & SESSION
@@ -19,50 +26,46 @@ function clearSession() {
 }
 
 // ─────────────────────────────────────────────
-// 2. CENTRAL FETCH WRAPPER (JSON)
+// 2. CENTRAL FETCH WRAPPER
 // Never redirects. Returns result to caller always.
 // ─────────────────────────────────────────────
 
-async function apiFetch(endpoint, options = {}) {
-    const token = localStorage.getItem('ww_token');
+async function apiFetch(endpoint, options) {
+    options = options || {};
+    const token = getToken();
 
-    const defaultHeaders = {
-        'Accept': 'application/json',
+    const headers = {
         'Content-Type': 'application/json',
+        'Accept': 'application/json'
     };
 
     if (token) {
-        defaultHeaders['Authorization'] = `Bearer ${token}`;
+        headers['Authorization'] = 'Bearer ' + token;
     }
 
-    const config = {
-        ...options,
-        headers: {
-            ...defaultHeaders,
-            ...options.headers,
-        },
-    };
+    if (options.headers) {
+        Object.assign(headers, options.headers);
+    }
 
     try {
-        const response = await fetch(`${API_BASE}${endpoint}`, config);
+        const response = await fetch(API_BASE + endpoint, {
+            ...options,
+            headers: headers
+        });
 
-        // Let's parse the JSON regardless of status code to see Laravel's error message
-        const data = await response.json();
+        const data = await response.json().catch(function() { return {}; });
+        return { ok: response.ok, status: response.status, data: data };
 
-        if (!response.ok) {
-            console.error(`API Error [${response.status}] at ${endpoint}:`, data);
-            throw new Error(data.message || 'Terjadi kesalahan pada server');
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Network or Parsing Error:', error);
-        throw error;
+    } catch (err) {
+        console.error('Network error:', err);
+        return { ok: false, status: 0, data: { message: 'Tidak dapat terhubung ke server.' } };
     }
 }
 
 // ─────────────────────────────────────────────
 // 3. ROUTE GUARD
+// Only place in app.js that navigates to login.
+// Call at the top of every protected page's DOMContentLoaded.
 // ─────────────────────────────────────────────
 
 function requireAuth() {
@@ -74,61 +77,25 @@ function requireAuth() {
 
 // ─────────────────────────────────────────────
 // 4. PROFILE API
+// Used by: profile.html
 // ─────────────────────────────────────────────
 
 async function fetchProfile() {
-    try {
-        const result = await apiFetch('/api/me'); // ADDED /api/
-        return result.data !== undefined ? result.data : result; // FIXED result.ok bug
-    } catch (error) {
-        console.error("Failed to fetch profile", error);
-        return null;
-    }
+    var result = await apiFetch('/me');
+    return result.ok ? result.data : null;
 }
 
 async function updateProfile(payload) {
-    return await apiFetch('/api/me', { // ADDED /api/
+    return await apiFetch('/me', {
         method: 'PUT',
         body: JSON.stringify(payload)
     });
 }
 
-/**
- * uploadPhoto(file)
- * Uploads a jpg File object to POST /api/me/photo via multipart/form-data.
- * Uses a raw fetch (NOT apiFetch) so we don't set Content-Type manually —
- * the browser must set it with the correct boundary for multipart.
- *
- * @param  {File}    file  - A jpg/jpeg File from <input type="file">
- * @returns {{ ok, status, data }}
- */
-async function uploadPhoto(file) {
-    const token = getToken();
-    const formData = new FormData();
-    formData.append('photo', file);
-
-    try {
-        const response = await fetch(API_BASE + '/me/photo', {
-            method: 'POST',
-            headers: {
-                // NOTE: Do NOT set Content-Type here — browser sets it with boundary
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: formData
-        });
-
-        const data = await response.json().catch(function() { return {}; });
-        return { ok: response.ok, status: response.status, data: data };
-
-    } catch (err) {
-        console.error('Photo upload network error:', err);
-        return { ok: false, status: 0, data: { message: 'Gagal mengunggah foto. Periksa koneksi Anda.' } };
-    }
-}
-
 // ─────────────────────────────────────────────
 // 5. AUTH — logout
+// Called from HTML buttons: onclick="logout()"
+// Revokes token server-side THEN clears local session.
 // ─────────────────────────────────────────────
 
 async function logout() {
@@ -169,24 +136,13 @@ async function fetchMenu(kodeMenu) {
 // ─────────────────────────────────────────────
 
 async function fetchOrders() {
-    try {
-        const result = await apiFetch('/api/pesanan');
-        // Return the data directly. If Laravel wraps it in 'data', use result.data. 
-        // Otherwise, just use result.
-        return result.data !== undefined ? result.data : result;
-    } catch (error) {
-        console.error("Failed to load history", error);
-        return []; // Only return empty if it ACTUALLY failed
-    }
+    var result = await apiFetch('/pesanan');
+    return result.ok ? result.data : [];
 }
 
 async function fetchOrder(noPesanan) {
-    try {
-        const result = await apiFetch('/api/pesanan/' + noPesanan);
-        return result.data !== undefined ? result.data : result;
-    } catch (error) {
-        return null;
-    }
+    var result = await apiFetch('/pesanan/' + noPesanan);
+    return result.ok ? result.data : null;
 }
 
 async function placeOrder(payload) {
@@ -200,12 +156,20 @@ async function placeOrder(payload) {
 // 9. CART — localStorage only, no API
 // ─────────────────────────────────────────────
 
-// Replace the old addToCart in app.js
-function addToCart(kodeMenu, kodeResto, name, price, stock, buttonEl) {
+/**
+ * Add item to cart.
+ * @param {string}           name     - product name (unique key)
+ * @param {number}           price    - unit price IDR
+ * @param {number}           stock    - max qty (default 99)
+ * @param {HTMLElement|null} buttonEl - pass `this` from onclick for visual feedback
+ *
+ * HTML usage:  onclick="addToCart('Nasi Goreng', 15000, 10, this)"
+ */
+function addToCart(name, price, stock, buttonEl) {
     stock = stock || 99;
 
     var cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
-    var existing = cart.find(function(item) { return item.kodeMenu === kodeMenu; });
+    var existing = cart.find(function(item) { return item.name === name; });
 
     if (existing) {
         if (existing.qty < stock) {
@@ -215,19 +179,14 @@ function addToCart(kodeMenu, kodeResto, name, price, stock, buttonEl) {
             return;
         }
     } else {
-        cart.push({
-            kodeMenu: kodeMenu,
-            kodeResto: kodeResto,
-            name: name,
-            price: price,
-            qty: 1,
-            addedAt: new Date().toISOString()
-        });
+        cart.push({ name: name, price: price, qty: 1, note: '', addedAt: new Date().toISOString() });
     }
 
     localStorage.setItem('wastewise_cart', JSON.stringify(cart));
     updateBadge();
 
+    // ✅ FIX: was `element.addEventListener(...)` → element undefined → crash
+    // Now accepts the button element directly as a parameter.
     if (buttonEl) {
         var orig = buttonEl.innerHTML;
         buttonEl.innerHTML = '<i class="fas fa-check"></i>';
@@ -328,6 +287,8 @@ function removeItem(index) {
 
 // ─────────────────────────────────────────────
 // 10. TOAST
+// Non-blocking success/error notification.
+// Replaces alert(). Used by profile.html saveProfile().
 // ─────────────────────────────────────────────
 
 function showToast(message, type) {
@@ -359,33 +320,26 @@ function showToast(message, type) {
 
 // ─────────────────────────────────────────────
 // 11. DASHBOARD GREETING
+// Called by dashboard.html to show first name in header.
+// ✅ FIX: endpoint was /api/user (404) → now /api/me (200)
 // ─────────────────────────────────────────────
 
 async function fetchUserProfile() {
-    try {
-        const result = await apiFetch('/api/me'); // ADDED /api/
-        const nameElement = document.getElementById('user-greeting-name');
+    var result = await apiFetch('/me'); // ✅ was /api/user → now /me
+    var nameElement = document.getElementById('user-greeting-name');
 
-        // FIXED logic to check for data instead of result.ok
-        if (result && result.name) {
-            // If the API returns the user object directly
-            const firstName = result.name.split(' ')[0];
-            if (nameElement) nameElement.textContent = firstName;
-        } else if (result && result.data && result.data.name) {
-            // If the API wraps the user object in 'data'
-            const firstName = result.data.name.split(' ')[0];
-            if (nameElement) nameElement.textContent = firstName;
-        } else {
-            if (nameElement) nameElement.textContent = 'Pelanggan';
-        }
-    } catch (error) {
-        const nameElement = document.getElementById('user-greeting-name');
+    if (result.ok && result.data && result.data.name) {
+        var firstName = result.data.name.split(' ')[0];
+        if (nameElement) nameElement.textContent = firstName;
+    } else {
         if (nameElement) nameElement.textContent = 'Pelanggan';
     }
 }
 
 // ─────────────────────────────────────────────
 // 12. INIT
+// Runs on every page. Each function guards itself
+// with element existence checks so it's safe everywhere.
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', function() {

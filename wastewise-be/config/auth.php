@@ -45,7 +45,7 @@ return [
         ],
 
         // API guard using Sanctum tokens with muser table
-        'sanctum' => [
+        'api' => [
             'driver' => 'sanctum',
             'provider' => 'musers',
         ],
@@ -71,7 +71,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', User::class),
+            'model' => App\Models\User::class,
         ],
 
         // Provider for the muser table

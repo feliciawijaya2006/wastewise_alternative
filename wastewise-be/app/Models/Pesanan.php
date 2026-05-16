@@ -15,7 +15,7 @@ class Pesanan extends Model
     protected $fillable = [
         'NoPesanan',
         'Tgl',
-        'Plg',
+        'user_id',   // ← Changed from 'Plg'
         'KodeResto',
         'Status',
         'NoUrutPesan',
@@ -27,6 +27,12 @@ class Pesanan extends Model
         'NoUrutPesan' => 'integer',
     ];
 
+    // Change the relationship to match the standard User model
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+    
     // Pesanan belongs to one pelanggan
     public function pelanggan()
     {

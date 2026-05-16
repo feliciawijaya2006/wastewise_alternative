@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - WasteWise</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#003D2B',
+                        accent: '#EF8030',
+                        danger: '#F44336',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+        
+        body {
+            background: #F8F9FA;
+        }
+        
+        .phone-container {
+            max-width: 375px;
+            min-height: 812px;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+        }
+        
+        .menu-item {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #F3F4F6;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .menu-item:hover {
+            background: #F8F9FA;
+        }
+        
+        .input-field {
+            border: 1px solid #D1D5DB;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .input-field:focus {
+            border-color: #003D2B;
+        }
+        
+        .input-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 4px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="phone-container">
+        <!-- ========== VIEW 1: PROFILE MENU (Default) ========== -->
+        <div id="view-profile-menu">
+            <!-- Header (Tanpa Back Button) -->
+            <div class="px-5 pt-12 pb-4 border-b sticky top-0 bg-white z-10">
+                <h1 class="text-2xl font-bold text-gray-800">Profil</h1>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="p-5 border-b">
+                <div class="text-center">
+                    <div class="w-24 h-24 bg-green-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+                        <i class="fas fa-user text-4xl text-green-600"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800" id="display-name">Leonard</h2>
+                    <p class="text-sm text-gray-500" id="display-phone">081234567890</p>
+                </div>
+            </div>
+
+            <!-- Menu Items -->
+            <div class="bg-white rounded-2xl mx-5 mt-5 overflow-hidden shadow-sm">
+                <div class="menu-item" onclick="showEditProfile()">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-user-edit text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Edit Profil</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+
+                <div class="menu-item" onclick="window.location.href='history.html'">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-history text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Riwayat Pesanan</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+
+                <div class="menu-item">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-bell text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Notifikasi</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+
+                <div class="menu-item">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-cog text-gray-400"></i>
+                        <span class="text-sm text-gray-700">Pengaturan</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+            </div>
+
+            <!-- Logout Button -->
+            <div class="p-5">
+                <button onclick="logout()" class="w-full bg-danger text-white py-4 rounded-xl font-bold hover:bg-red-600 transition flex items-center justify-center gap-2">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Keluar</span>
+            </button>
+            </div>
+        </div>
+
+        <!-- ========== VIEW 2: EDIT PROFILE (Hidden by default) ========== -->
+        <div id="view-edit-profile" class="hidden">
+            <!-- Header (Dengan Back Button untuk kembali ke menu profil) -->
+            <div class="px-5 pt-12 pb-4 border-b sticky top-0 bg-white z-10">
+                <div class="flex items-center gap-4">
+                    <button onclick="showProfileMenu()" class="text-gray-800">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                    <h1 class="text-2xl font-bold text-gray-800">Profil</h1>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-5 pb-24">
+                <!-- Profile Photo -->
+                <div class="text-center mb-8">
+                    <div class="relative inline-block">
+                        <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-3 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Profile" class="w-full h-full object-cover">
+                        </div>
+                        <button class="absolute bottom-0 right-0 w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fas fa-pen text-xs"></i>
+                    </button>
+                    </div>
+                </div>
+
+                <!-- Form Fields -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="input-label">Nama</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-user text-accent"></i>
+                            <input type="text" id="edit-name" class="input-field" value="LeoNard W.">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="input-label">Alamat</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-map-marker-alt text-accent"></i>
+                            <input type="text" id="edit-address" class="input-field" value="Kompleks Makassar, Sulawesi Selatan">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="input-label">Email</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-accent"></i>
+                            <input type="email" id="edit-email" class="input-field" value="leonard@gmail.com">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="input-label">Nomor Telepon</label>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-phone text-accent"></i>
+                            <input type="tel" id="edit-phone" class="input-field" value="+62 812-7777-9999">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="mt-8">
+                    <button onclick="saveProfile()" class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition">
+                    Simpan Perubahan
+                </button>
+                </div>
+
+                <!-- Logout Button -->
+                <div class="mt-4">
+                    <button onclick="logout()" class="w-full bg-danger text-white py-4 rounded-xl font-bold hover:bg-red-600 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Log Out</span>
+                </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t px-6 py-4 flex justify-between items-center z-20">
+            <a href="dashboard.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-[10px] font-medium">Beranda</span>
+            </a>
+            <a href="cart.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition relative">
+                <i class="fas fa-shopping-bag text-xl"></i>
+                <span class="text-[10px] font-medium">Keranjang</span>
+                <span id="cart-badge" class="hidden absolute -top-1 right-2 bg-red-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            </a>
+            <a href="history.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-receipt text-xl"></i>
+                <span class="text-[10px] font-medium">Histori</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-primary transition">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-[10px] font-medium">Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+
+    <script>
+        // ========== PROFILE DATA ==========
+
+        let userProfile = {
+            name: 'Leonard',
+            phone: '081234567890',
+            address: 'Kompleks Makassar, Sulawesi Selatan',
+            email: 'leonard@gmail.com',
+            fullPhone: '+62 812-7777-9999'
+        };
+
+        // Load profile data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfileData();
+        });
+
+        function loadProfileData() {
+            // Try to load from localStorage
+            const savedProfile = localStorage.getItem('wastewise_profile');
+            if (savedProfile) {
+                userProfile = JSON.parse(savedProfile);
+            }
+
+            // Update display
+            document.getElementById('display-name').textContent = userProfile.name;
+            document.getElementById('display-phone').textContent = userProfile.phone;
+
+            // Update form fields
+            document.getElementById('edit-name').value = userProfile.name;
+            document.getElementById('edit-address').value = userProfile.address;
+            document.getElementById('edit-email').value = userProfile.email;
+            document.getElementById('edit-phone').value = userProfile.fullPhone;
+        }
+
+        // ========== VIEW SWITCHING ==========
+
+        function showEditProfile() {
+            document.getElementById('view-profile-menu').classList.add('hidden');
+            document.getElementById('view-edit-profile').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function showProfileMenu() {
+            document.getElementById('view-edit-profile').classList.add('hidden');
+            document.getElementById('view-profile-menu').classList.remove('hidden');
+            loadProfileData(); // Reload data
+            window.scrollTo(0, 0);
+        }
+
+        // ========== SAVE PROFILE ==========
+
+        function saveProfile() {
+            // Get values from form
+            userProfile.name = document.getElementById('edit-name').value;
+            userProfile.address = document.getElementById('edit-address').value;
+            userProfile.email = document.getElementById('edit-email').value;
+            userProfile.fullPhone = document.getElementById('edit-phone').value;
+
+            // Save to localStorage
+            localStorage.setItem('wastewise_profile', JSON.stringify(userProfile));
+
+            // Show success message
+            alert('Profil berhasil diperbarui!');
+
+            // Go back to profile menu
+            showProfileMenu();
+        }
+
+        // ========== LOGOUT ==========
+
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                // Clear user data
+                localStorage.removeItem('wastewise_user');
+                localStorage.removeItem('wastewise_profile');
+
+                // Redirect to login
+                window.location.href = '../index.html';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -3,7 +3,7 @@
  * Loaded by ALL protected pages: dashboard.html, profile.html, cart.html, history.html
  */
 
-const API_BASE = 'http://localhost:8000'; // ← change once when deploying
+const API_BASE = 'http://localhost:8000/api'; // ← change once when deploying
 
 // ─────────────────────────────────────────────
 // 1. TOKEN & SESSION
@@ -23,41 +23,35 @@ function clearSession() {
 // Never redirects. Returns result to caller always.
 // ─────────────────────────────────────────────
 
-async function apiFetch(endpoint, options = {}) {
-    const token = localStorage.getItem('ww_token');
+async function apiFetch(endpoint, options) {
+    options = options || {};
+    const token = getToken();
 
-    const defaultHeaders = {
-        'Accept': 'application/json',
+    const headers = {
         'Content-Type': 'application/json',
+        'Accept': 'application/json'
     };
 
     if (token) {
-        defaultHeaders['Authorization'] = `Bearer ${token}`;
+        headers['Authorization'] = 'Bearer ' + token;
     }
 
-    const config = {
-        ...options,
-        headers: {
-            ...defaultHeaders,
-            ...options.headers,
-        },
-    };
+    if (options.headers) {
+        Object.assign(headers, options.headers);
+    }
 
     try {
-        const response = await fetch(`${API_BASE}${endpoint}`, config);
+        const response = await fetch(API_BASE + endpoint, {
+            ...options,
+            headers: headers
+        });
 
-        // Let's parse the JSON regardless of status code to see Laravel's error message
-        const data = await response.json();
+        const data = await response.json().catch(function() { return {}; });
+        return { ok: response.ok, status: response.status, data: data };
 
-        if (!response.ok) {
-            console.error(`API Error [${response.status}] at ${endpoint}:`, data);
-            throw new Error(data.message || 'Terjadi kesalahan pada server');
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Network or Parsing Error:', error);
-        throw error;
+    } catch (err) {
+        console.error('Network error:', err);
+        return { ok: false, status: 0, data: { message: 'Tidak dapat terhubung ke server.' } };
     }
 }
 
@@ -77,17 +71,12 @@ function requireAuth() {
 // ─────────────────────────────────────────────
 
 async function fetchProfile() {
-    try {
-        const result = await apiFetch('/api/me'); // ADDED /api/
-        return result.data !== undefined ? result.data : result; // FIXED result.ok bug
-    } catch (error) {
-        console.error("Failed to fetch profile", error);
-        return null;
-    }
+    var result = await apiFetch('/me');
+    return result.ok ? result.data : null;
 }
 
 async function updateProfile(payload) {
-    return await apiFetch('/api/me', { // ADDED /api/
+    return await apiFetch('/me', {
         method: 'PUT',
         body: JSON.stringify(payload)
     });
@@ -169,24 +158,13 @@ async function fetchMenu(kodeMenu) {
 // ─────────────────────────────────────────────
 
 async function fetchOrders() {
-    try {
-        const result = await apiFetch('/api/pesanan');
-        // Return the data directly. If Laravel wraps it in 'data', use result.data. 
-        // Otherwise, just use result.
-        return result.data !== undefined ? result.data : result;
-    } catch (error) {
-        console.error("Failed to load history", error);
-        return []; // Only return empty if it ACTUALLY failed
-    }
+    var result = await apiFetch('/pesanan');
+    return result.ok ? result.data : [];
 }
 
 async function fetchOrder(noPesanan) {
-    try {
-        const result = await apiFetch('/api/pesanan/' + noPesanan);
-        return result.data !== undefined ? result.data : result;
-    } catch (error) {
-        return null;
-    }
+    var result = await apiFetch('/pesanan/' + noPesanan);
+    return result.ok ? result.data : null;
 }
 
 async function placeOrder(payload) {
@@ -200,12 +178,11 @@ async function placeOrder(payload) {
 // 9. CART — localStorage only, no API
 // ─────────────────────────────────────────────
 
-// Replace the old addToCart in app.js
-function addToCart(kodeMenu, kodeResto, name, price, stock, buttonEl) {
+function addToCart(name, price, stock, buttonEl) {
     stock = stock || 99;
 
     var cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
-    var existing = cart.find(function(item) { return item.kodeMenu === kodeMenu; });
+    var existing = cart.find(function(item) { return item.name === name; });
 
     if (existing) {
         if (existing.qty < stock) {
@@ -215,14 +192,7 @@ function addToCart(kodeMenu, kodeResto, name, price, stock, buttonEl) {
             return;
         }
     } else {
-        cart.push({
-            kodeMenu: kodeMenu,
-            kodeResto: kodeResto,
-            name: name,
-            price: price,
-            qty: 1,
-            addedAt: new Date().toISOString()
-        });
+        cart.push({ name: name, price: price, qty: 1, note: '', addedAt: new Date().toISOString() });
     }
 
     localStorage.setItem('wastewise_cart', JSON.stringify(cart));
@@ -362,24 +332,13 @@ function showToast(message, type) {
 // ─────────────────────────────────────────────
 
 async function fetchUserProfile() {
-    try {
-        const result = await apiFetch('/api/me'); // ADDED /api/
-        const nameElement = document.getElementById('user-greeting-name');
+    var result = await apiFetch('/me');
+    var nameElement = document.getElementById('user-greeting-name');
 
-        // FIXED logic to check for data instead of result.ok
-        if (result && result.name) {
-            // If the API returns the user object directly
-            const firstName = result.name.split(' ')[0];
-            if (nameElement) nameElement.textContent = firstName;
-        } else if (result && result.data && result.data.name) {
-            // If the API wraps the user object in 'data'
-            const firstName = result.data.name.split(' ')[0];
-            if (nameElement) nameElement.textContent = firstName;
-        } else {
-            if (nameElement) nameElement.textContent = 'Pelanggan';
-        }
-    } catch (error) {
-        const nameElement = document.getElementById('user-greeting-name');
+    if (result.ok && result.data && result.data.name) {
+        var firstName = result.data.name.split(' ')[0];
+        if (nameElement) nameElement.textContent = firstName;
+    } else {
         if (nameElement) nameElement.textContent = 'Pelanggan';
     }
 }

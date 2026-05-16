@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keranjang - WasteWise</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -21,258 +22,308 @@
             }
         }
     </script>
-    
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Inter", sans-serif; }
-        body { background: #F8F9FA; }
-        .phone-container { max-width: 375px; min-height: 812px; margin: 0 auto; background: white; position: relative; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+        
+        body {
+            background: #F8F9FA;
+        }
+        
+        .phone-container {
+            max-width: 375px;
+            min-height: 812px;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="phone-container">
-    <!-- Header -->
-    <div class="px-5 pt-12 pb-4 border-b sticky top-0 bg-white z-10">
-        <h1 class="text-2xl font-bold text-gray-800">Keranjang Saya</h1>
-    </div>
-    
-    <!-- Cart Content -->
-    <div class="p-5 pb-40">
-        <!-- Tenant Info -->
-        <div class="mb-6">
-            <h2 class="font-bold text-gray-800 mb-1">Warung AW</h2>
-            <p class="text-xs text-gray-500">Kantin UC Makassar</p>
+    <div class="phone-container">
+        <!-- Header -->
+        <div class="px-5 pt-12 pb-4 border-b sticky top-0 bg-white z-10">
+            <h1 class="text-2xl font-bold text-gray-800">Keranjang Saya</h1>
         </div>
-        
-        <!-- Cart Items (diisi oleh app.js) -->
-        <div id="cart-items" class="space-y-4 mb-4"></div>
-        
-        <!-- Empty State -->
-        <div id="empty-cart" class="hidden text-center py-10">
-            <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <i class="fas fa-shopping-bag text-4xl text-gray-400"></i>
-            </div>
-            <p class="text-gray-500 text-sm">Keranjang Anda kosong</p>
-            <button onclick="window.location.href='dashboard.html'" class="mt-4 text-primary font-semibold text-sm">
-                Mulai Belanja →
-            </button>
-        </div>
-    </div>
-    
-    <!-- Fixed Bottom: Summary + Button -->
-    <div class="fixed bottom-16 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t p-5 shadow-lg z-10">
-        <div class="flex justify-between items-center mb-3 text-sm">
-            <span class="text-gray-500">Subtotal</span>
-            <span id="subtotal" class="font-semibold text-gray-800">Rp0</span>
-        </div>
-        <div class="flex justify-between items-center mb-3 text-sm">
-            <span class="text-gray-500">Biaya Website</span>
-            <span class="font-semibold text-gray-800">Rp500</span>
-        </div>
-        <div class="flex justify-between items-center mb-4 pt-3 border-t">
-            <span class="font-bold text-gray-800 text-base">Total</span>
-            <span id="total" class="font-bold text-primary text-xl">Rp0</span>
-        </div>
-        <button onclick="showConfirmation()" class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition shadow-lg">
-            Lanjutkan Pesanan
-        </button>
-    </div>
-    
-    <!-- Bottom Navigation -->
-    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t px-6 py-4 flex justify-between items-center z-20">
-        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
-            <i class="fas fa-home text-xl"></i>
-            <span class="text-[10px] font-medium">Beranda</span>
-        </a>
-        <a href="cart.html" class="flex flex-col items-center gap-1 text-primary transition">
-            <i class="fas fa-shopping-bag text-xl"></i>
-            <span class="text-[10px] font-medium">Keranjang</span>
-            <span id="cart-badge" class="hidden absolute -top-1 right-2 bg-red-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
-        </a>
-        <a href="history.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
-            <i class="fas fa-receipt text-xl"></i>
-            <span class="text-[10px] font-medium">Riwayat</span>
-        </a>
-        <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
-            <i class="fas fa-user text-xl"></i>
-            <span class="text-[10px] font-medium">Profil</span>
-        </a>
-    </div>
-    
-    <!-- Confirmation Modal -->
-    <div id="confirmation-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-5">
-        <div class="bg-white rounded-3xl p-6 w-full max-w-[375px]">
-            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Konfirmasi Pesanan</h2>
-            
-            <div class="mb-4 pb-4 border-b">
-                <h3 class="font-bold text-gray-800 mb-1">Warung AW</h3>
+
+        <!-- Cart Content -->
+        <div class="p-5 pb-40">
+            <!-- Tenant Info -->
+            <div class="mb-6">
+                <h2 class="font-bold text-gray-800 mb-1">Warung AW</h2>
                 <p class="text-xs text-gray-500">Kantin UC Makassar</p>
             </div>
-            
-            <div id="modal-items" class="mb-4 space-y-2 text-sm"></div>
-            
-            <div class="mb-6">
-                <label class="flex items-start gap-3 cursor-pointer">
+
+            <!-- Cart Items (diisi oleh app.js) -->
+            <div id="cart-items" class="space-y-4 mb-4"></div>
+
+            <!-- Empty State -->
+            <div id="empty-cart" class="hidden text-center py-10">
+                <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-shopping-bag text-4xl text-gray-400"></i>
+                </div>
+                <p class="text-gray-500 text-sm">Keranjang Anda kosong</p>
+                <button onclick="window.location.href='dashboard.html'" class="mt-4 text-primary font-semibold text-sm">
+                Mulai Belanja →
+            </button>
+            </div>
+        </div>
+
+        <!-- Fixed Bottom: Summary + Button -->
+        <div class="fixed bottom-16 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t p-5 shadow-lg z-10">
+            <div class="flex justify-between items-center mb-3 text-sm">
+                <span class="text-gray-500">Subtotal</span>
+                <span id="subtotal" class="font-semibold text-gray-800">Rp0</span>
+            </div>
+            <div class="flex justify-between items-center mb-3 text-sm">
+                <span class="text-gray-500">Biaya Website</span>
+                <span class="font-semibold text-gray-800">Rp500</span>
+            </div>
+            <div class="flex justify-between items-center mb-4 pt-3 border-t">
+                <span class="font-bold text-gray-800 text-base">Total</span>
+                <span id="total" class="font-bold text-primary text-xl">Rp0</span>
+            </div>
+            <button onclick="showConfirmation()" class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition shadow-lg">
+            Lanjutkan Pesanan
+        </button>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t px-6 py-4 flex justify-between items-center z-20">
+            <a href="dashboard.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-[10px] font-medium">Beranda</span>
+            </a>
+            <a href="cart.html" class="flex flex-col items-center gap-1 text-primary transition">
+                <i class="fas fa-shopping-bag text-xl"></i>
+                <span class="text-[10px] font-medium">Keranjang</span>
+                <span id="cart-badge" class="hidden absolute -top-1 right-2 bg-red-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            </a>
+            <a href="history.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-receipt text-xl"></i>
+                <span class="text-[10px] font-medium">Riwayat</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-[10px] font-medium">Profil</span>
+            </a>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmation-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-5">
+            <div class="bg-white rounded-3xl p-6 w-full max-w-[375px]">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Konfirmasi Pesanan</h2>
+
+                <div class="mb-4 pb-4 border-b">
+                    <h3 class="font-bold text-gray-800 mb-1">Warung AW</h3>
+                    <p class="text-xs text-gray-500">Kantin UC Makassar</p>
+                </div>
+
+                <div id="modal-items" class="mb-4 space-y-2 text-sm"></div>
+
+                <div class="mb-6">
+                    <label class="flex items-start gap-3 cursor-pointer">
                     <input type="checkbox" id="agreement" class="mt-1 w-5 h-5 border-2 border-primary rounded focus:ring-primary" onchange="toggleConfirmButton()">
                     <span class="text-sm text-gray-600">Saya bersedia mengambil dan membayar di tempat tepat waktu.</span>
                 </label>
-            </div>
-            
-            <div class="space-y-2 mb-6 text-sm">
-                <div class="flex justify-between">
-                    <span class="text-gray-500">Subtotal</span>
-                    <span id="modal-subtotal" class="text-gray-800">Rp0</span>
                 </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500">Biaya Website</span>
-                    <span class="text-gray-800">Rp500</span>
+
+                <div class="space-y-2 mb-6 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Subtotal</span>
+                        <span id="modal-subtotal" class="text-gray-800">Rp0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Biaya Website</span>
+                        <span class="text-gray-800">Rp500</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-base pt-2 border-t">
+                        <span>Total</span>
+                        <span id="modal-total" class="text-primary">Rp0</span>
+                    </div>
                 </div>
-                <div class="flex justify-between font-bold text-base pt-2 border-t">
-                    <span>Total</span>
-                    <span id="modal-total" class="text-primary">Rp0</span>
-                </div>
-            </div>
-            
-            <div class="flex gap-3">
-                <button onclick="closeConfirmation()" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-300 transition">
+
+                <div class="flex gap-3">
+                    <button onclick="closeConfirmation()" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-300 transition">
                     Batal
                 </button>
-                <button onclick="confirmOrder()" id="modal-confirm-btn" disabled class="flex-1 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition disabled:bg-gray-300 disabled:cursor-not-allowed">
+                    <button onclick="confirmOrder()" id="modal-confirm-btn" disabled class="flex-1 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition disabled:bg-gray-300 disabled:cursor-not-allowed">
                     Konfirmasi
                 </button>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Success Modal -->
-    <div id="success-modal" class="hidden fixed inset-0 bg-primary z-50 flex items-center justify-center">
-        <div class="relative w-full max-w-[375px] h-full max-h-[812px] flex items-center justify-center p-5">
-            <div class="bg-white rounded-3xl p-8 text-center w-full max-h-[812px] overflow-y-auto">
-                <div class="w-20 h-20 bg-accent rounded-full mx-auto mb-6 flex items-center justify-center">
-                    <i class="fas fa-check text-4xl text-white"></i>
-                </div>
-                
-                <h2 class="text-xl font-bold text-gray-800 mb-6">Pesanan Tersimpan</h2>
-                
-                <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left space-y-3">
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Nomor Antrian</span>
-                        <span id="order-number" class="font-semibold text-gray-800">ORD170426001</span>
+
+        <!-- Success Modal -->
+        <div id="success-modal" class="hidden fixed inset-0 bg-primary z-50 flex items-center justify-center">
+            <div class="relative w-full max-w-[375px] h-full max-h-[812px] flex items-center justify-center p-5">
+                <div class="bg-white rounded-3xl p-8 text-center w-full max-h-[812px] overflow-y-auto">
+                    <div class="w-20 h-20 bg-accent rounded-full mx-auto mb-6 flex items-center justify-center">
+                        <i class="fas fa-check text-4xl text-white"></i>
                     </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Jumlah</span>
-                        <span id="order-total" class="font-semibold text-gray-800">Rp0</span>
+
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Pesanan Tersimpan</h2>
+
+                    <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Nomor Antrian</span>
+                            <span id="order-number" class="font-semibold text-gray-800">ORD170426001</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Jumlah</span>
+                            <span id="order-total" class="font-semibold text-gray-800">Rp0</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Batas Waktu Ambil</span>
+                            <span class="font-semibold text-gray-800">17:00</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Lokasi</span>
+                            <span class="font-semibold text-gray-800">Kantin UCM</span>
+                        </div>
                     </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Batas Waktu Ambil</span>
-                        <span class="font-semibold text-gray-800">17:00</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Lokasi</span>
-                        <span class="font-semibold text-gray-800">Kantin UCM</span>
-                    </div>
-                </div>
-                
-                <p class="text-xs text-gray-500 mb-6">Silahkan mengambil dan membayar di waktu sebelum batas waktu yang ditentukan.</p>
-                
-                <button onclick="backToHome()" class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition">
+
+                    <p class="text-xs text-gray-500 mb-6">Silahkan mengambil dan membayar di waktu sebelum batas waktu yang ditentukan.</p>
+
+                    <button onclick="backToHome()" class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition">
                     Kembali ke Home
                 </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ✅ Load shared functions dari app.js -->
-<script src="../js/app.js"></script>
+    <!-- ✅ Load shared functions dari app.js -->
+    <script src="../js/app.js"></script>
 
-<!-- ✅ Script khusus cart.html -->
-<script>
-// ========== SAVE ORDER FUNCTION (Local to cart.html) ==========
-function saveOrder(orderData) {
-    let orders = JSON.parse(localStorage.getItem('wastewise_orders')) || [];
-    orders.unshift(orderData);
-    localStorage.setItem('wastewise_orders', JSON.stringify(orders));
-}
+    <!-- ✅ Script khusus cart.html -->
+    <script>
+        // ========== SAVE ORDER FUNCTION (Local to cart.html) ==========
+        function saveOrder(orderData) {
+            let orders = JSON.parse(localStorage.getItem('wastewise_orders')) || [];
+            orders.unshift(orderData);
+            localStorage.setItem('wastewise_orders', JSON.stringify(orders));
+        }
 
-// ========== MODAL INTERACTIONS ==========
+        // ========== MODAL INTERACTIONS ==========
 
-function showConfirmation() {
-    const cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
-    if (cart.length === 0) {
-        alert('Keranjang masih kosong!');
-        return;
-    }
-    
-    // Render modal items
-    const modalItems = document.getElementById('modal-items');
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    const total = subtotal + 500;
-    
-    let html = '';
-    cart.forEach(item => {
-        html += `<div class="flex justify-between"><span>${item.name} × ${item.qty}</span><span class="font-semibold">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span></div>`;
-    });
-    
-    modalItems.innerHTML = html;
-    document.getElementById('modal-subtotal').textContent = `Rp${subtotal.toLocaleString('id-ID')}`;
-    document.getElementById('modal-total').textContent = `Rp${total.toLocaleString('id-ID')}`;
-    
-    // Reset checkbox & show modal
-    document.getElementById('agreement').checked = false;
-    document.getElementById('modal-confirm-btn').disabled = true;
-    document.getElementById('confirmation-modal').classList.remove('hidden');
-}
+        function showConfirmation() {
+            const cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
+            if (cart.length === 0) {
+                alert('Keranjang masih kosong!');
+                return;
+            }
 
-function closeConfirmation() {
-    document.getElementById('confirmation-modal').classList.add('hidden');
-}
+            // Render modal items
+            const modalItems = document.getElementById('modal-items');
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const total = subtotal + 500;
 
-function toggleConfirmButton() {
-    const checkbox = document.getElementById('agreement');
-    const btn = document.getElementById('modal-confirm-btn');
-    btn.disabled = !checkbox.checked;
-}
+            let html = '';
+            cart.forEach(item => {
+                html += `<div class="flex justify-between"><span>${item.name} × ${item.qty}</span><span class="font-semibold">Rp${(item.price * item.qty).toLocaleString('id-ID')}</span></div>`;
+            });
 
-function confirmOrder() {
-    if (!document.getElementById('agreement').checked) {
-        alert('Mohon setuju dengan ketentuan pesanan');
-        return;
-    }
-    
-    const cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
-    const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0) + 500;
-    const orderNumber = 'ORD' + Date.now().toString().slice(-9);
-    
-    // ✅ Buat objek order untuk disimpan ke history
-    const newOrder = {
-        id: orderNumber,
-        tenant: 'Warung AW',
-        date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) + ' | ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-        status: 'berlangsung',
-        pickupTime: '17:00',
-        total: total,
-        items: cart.map(item => `${item.name} x${item.qty}`).join(', ')
-    };
-    
-    // ✅ Simpan ke localStorage history
-    saveOrder(newOrder);
-    
-    closeConfirmation();
-    
-    document.getElementById('order-number').textContent = orderNumber;
-    document.getElementById('order-total').textContent = `Rp${total.toLocaleString('id-ID')}`;
-    document.getElementById('success-modal').classList.remove('hidden');
-    
-    // Kosongkan keranjang
-    localStorage.removeItem('wastewise_cart');
-    updateBadge(); // Update badge navigasi
-}
+            modalItems.innerHTML = html;
+            document.getElementById('modal-subtotal').textContent = `Rp${subtotal.toLocaleString('id-ID')}`;
+            document.getElementById('modal-total').textContent = `Rp${total.toLocaleString('id-ID')}`;
 
-function backToHome() {
-    window.location.href = 'dashboard.html';
-}
-</script>
+            // Reset checkbox & show modal
+            document.getElementById('agreement').checked = false;
+            document.getElementById('modal-confirm-btn').disabled = true;
+            document.getElementById('confirmation-modal').classList.remove('hidden');
+        }
+
+        function closeConfirmation() {
+            document.getElementById('confirmation-modal').classList.add('hidden');
+        }
+
+        function toggleConfirmButton() {
+            const checkbox = document.getElementById('agreement');
+            const btn = document.getElementById('modal-confirm-btn');
+            btn.disabled = !checkbox.checked;
+        }
+
+        async function confirmOrder() {
+            if (!document.getElementById('agreement').checked) {
+                alert('Mohon setuju dengan ketentuan pesanan');
+                return;
+            }
+
+            const cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
+            if (cart.length === 0) {
+                alert('Keranjang masih kosong!');
+                return;
+            }
+
+            // 1. Loading state
+            const btn = document.getElementById('modal-confirm-btn');
+            btn.disabled = true;
+            btn.textContent = 'Memproses...';
+
+            // 2. Format payload for Laravel API
+            const kodeResto = cart[0].kodeResto;
+            const orderNumber = 'PES' + Date.now().toString().slice(-9);
+
+            const payload = {
+                NoPesanan: orderNumber,
+                KodeResto: kodeResto,
+                items: cart.map(item => ({
+                    Kode: item.kodeMenu, // CHANGED: Laravel expects 'Kode', not 'KodeMenu'
+                    Harga: item.price, // ADDED: Laravel expects the price sent from the frontend
+                    Jumlah: item.qty, // Keep this as is (assuming your backend expects 'Jumlah' or 'Qty')
+                    Catatan: item.note
+                }))
+            };
+
+            try {
+                // 3. Send POST request to Database
+                const result = await apiFetch('/api/pesanan', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                // 4. If apiFetch doesn't throw an error, it was a 100% SUCCESS!
+                closeConfirmation();
+                document.getElementById('order-number').textContent = orderNumber;
+
+                // Calculate total
+                const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0) + 500;
+                document.getElementById('order-total').textContent = `Rp${total.toLocaleString('id-ID')}`;
+
+                // Show Success Modal
+                document.getElementById('success-modal').classList.remove('hidden');
+
+                // Clear the temporary cart now that DB has taken over
+                localStorage.removeItem('wastewise_cart');
+                if (typeof updateBadge === "function") updateBadge(); // Update UI
+
+            } catch (error) {
+                // This catches BOTH network errors AND Laravel validation errors (like 422 or 500)
+                console.error("Checkout Error:", error);
+
+                // Error.message comes directly from your apiFetch throw statement!
+                alert(error.message || 'Gagal memproses pesanan.');
+
+            } finally {
+                // Reset button state
+                btn.disabled = false;
+                btn.textContent = 'Konfirmasi';
+            }
+        }
+
+        function backToHome() {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
 
 </body>
+
 </html>

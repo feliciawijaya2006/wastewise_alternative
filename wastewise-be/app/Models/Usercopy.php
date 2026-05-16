@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-
-class User extends Authenticatable
+use Laravel\Sanctum\HasApiTokens; // <--- 1. YOU MUST ADD THIS IMPORT AT THE TOP
+class Usercopy extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    // 2. YOU MUST ADD 'HasApiTokens' INSIDE THIS USE STATEMENT
+    use HasApiTokens, HasFactory, Notifiable; 
 
     protected $fillable = [
         'name',
@@ -17,8 +17,6 @@ class User extends Authenticatable
         'password',
         'phone',
         'role',
-        'address',     // ← NEW: user's delivery / home address
-        'photo_url',   // ← NEW: relative path e.g. "avatars/uuid.jpg"
     ];
 
     protected $hidden = [
@@ -30,7 +28,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
+            'password' => 'hashed',
         ];
     }
 }

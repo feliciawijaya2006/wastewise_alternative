@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Produk - WasteWise</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -22,7 +23,7 @@
             }
         }
     </script>
-    
+
     <style>
         * {
             margin: 0;
@@ -42,7 +43,7 @@
             background: white;
             border-radius: 40px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             position: relative;
         }
         
@@ -79,30 +80,38 @@
         }
     </style>
 </head>
+
 <body>
 
-<div class="phone-container">
-    <!-- Header -->
-    <div class="flex items-center gap-4 px-6 pt-12 pb-4 bg-white sticky top-0 z-10 border-b">
-        <button onclick="history.back()" 
-                class="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center hover:bg-accent/20 transition">
+    <div class="phone-container">
+        <!-- Header -->
+        <div class="flex items-center gap-4 px-6 pt-12 pb-4 bg-white sticky top-0 z-10 border-b">
+            <button onclick="history.back()" class="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center hover:bg-accent/20 transition">
             <i class="fas fa-arrow-left text-accent text-lg"></i>
         </button>
-        <h1 class="text-xl font-bold text-primary">Detail Produk</h1>
-    </div>
-    
-    <!-- Product Content -->
-    <div class="px-6 pb-32">
-        <!-- Product Image -->
-        <div class="bg-gray-100 rounded-2xl h-48 flex items-center justify-center mb-6 relative overflow-hidden">
-            <i class="fas fa-box-open text-6xl text-gray-400"></i>
+            <h1 class="text-xl font-bold text-primary">Detail Produk</h1>
+        </div>
+
+        <!-- Product Content -->
+        <div class="px-6 pb-32">
+            <!-- Product Image -->
+            <div class="bg-gray-100 rounded-2xl h-48 flex items-center justify-center mb-6 relative overflow-hidden">
+                <i id="default-icon" class="fas fa-box-open text-6xl text-gray-400"></i>
+
+                <img id="product-image" class="hidden w-full h-full object-cover absolute inset-0 z-0" alt="Foto Produk" onerror="this.classList.add('hidden'); document.getElementById('default-icon').classList.remove('hidden');">
+
+                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-xl shadow-sm z-10">
+                    <p class="text-xs text-gray-500">Stok Tersisa</p>
+                    <p id="stock-display" class="text-lg font-bold text-accent">5</p>
+                </div>
+            </div>
             <!-- Stok Badge -->
             <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-xl shadow-sm">
                 <p class="text-xs text-gray-500">Stok Tersisa</p>
                 <p id="stock-display" class="text-lg font-bold text-accent">5</p>
             </div>
         </div>
-        
+
         <!-- Product Info -->
         <div class="flex justify-between items-start mb-4">
             <div>
@@ -111,21 +120,19 @@
             </div>
             <span id="product-price" class="text-xl font-bold text-accent">Rp5.000</span>
         </div>
-        
+
         <!-- Description -->
         <div class="mb-6">
             <h3 class="text-sm font-semibold text-gray-700 mb-2">Deskripsi Produk</h3>
             <p id="product-desc" class="text-sm text-gray-500 leading-relaxed">Include Nasi + Telur/Sayur</p>
         </div>
-        
+
         <!-- Keterangan Textarea -->
         <div class="mb-6">
             <label class="text-sm font-semibold text-gray-700 mb-2 block">Keterangan</label>
-            <textarea id="product-note" rows="3" 
-                      class="w-full border border-gray-300 rounded-xl p-3 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 resize-none"
-                      placeholder="Contoh: Tidak pakai pedas, extra nasi, dll..."></textarea>
+            <textarea id="product-note" rows="3" class="w-full border border-gray-300 rounded-xl p-3 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 resize-none" placeholder="Contoh: Tidak pakai pedas, extra nasi, dll..."></textarea>
         </div>
-        
+
         <!-- Quantity Selector -->
         <div class="flex items-center justify-between mb-6 bg-gray-50 rounded-2xl p-4">
             <span class="text-sm font-semibold text-gray-700">Jumlah</span>
@@ -139,140 +146,146 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- Total Price -->
         <div class="flex justify-between items-center mb-4">
             <span class="text-sm text-gray-500">Total Harga</span>
             <span id="total-price" class="text-lg font-bold text-primary">Rp0</span>
         </div>
     </div>
-    
+
     <!-- Bottom Button -->
     <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] bg-white border-t px-6 py-4 z-20 rounded-t-3xl shadow-lg">
-        <button onclick="addToCartFromDetail()" 
-                id="add-to-cart-btn"
-                class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        <button onclick="addToCartFromDetail()" id="add-to-cart-btn" class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2">
             <i class="fas fa-shopping-bag"></i>
             <span>Tambahkan ke Keranjang</span>
         </button>
     </div>
-</div>
+    </div>
 
-<!-- ✅ Script path untuk file di folder Pages -->
-<script src="../js/app.js"></script>
+    <!-- ✅ Script path untuk file di folder Pages -->
+    <script src="../js/app.js"></script>
 
-<script>
-// ========== DETAIL PRODUK LOGIC ==========
+    <script>
+        let currentMenu = null;
+        let qty = 0;
 
-let qty = 0;
-let maxStock = 5;
-let productName = '';
-let productPrice = 0;
-let productNote = '';
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const menuId = urlParams.get('id');
 
-// Parse URL parameters
-const urlParams = new URLSearchParams(window.location.search);
-productName = urlParams.get('name') || 'Paket 5k';
-productPrice = parseInt(urlParams.get('price')) || 5000;
-maxStock = parseInt(urlParams.get('stock')) || 5;
-const productDesc = urlParams.get('desc') || 'Include Nasi + Telur/Sayur';
+            if (!menuId) {
+                alert('Menu tidak valid!');
+                window.history.back();
+                return;
+            }
 
-// Update UI with product data
-document.getElementById('product-name').textContent = productName;
-document.getElementById('product-price').textContent = `Rp${productPrice.toLocaleString('id-ID')}`;
-document.getElementById('product-desc').textContent = productDesc;
-document.getElementById('stock-display').textContent = maxStock;
-
-function increaseQty() {
-    if (qty < maxStock) {
-        qty++;
-        updateUI();
-    } else {
-        alert(`Stok hanya tersisa ${maxStock}!`);
-    }
-}
-
-function decreaseQty() {
-    if (qty > 0) {
-        qty--;
-        updateUI();
-    }
-}
-
-function updateUI() {
-    document.getElementById('qty-display').textContent = qty;
-    document.getElementById('total-price').textContent = `Rp${(qty * productPrice).toLocaleString('id-ID')}`;
-    
-    // Enable/disable button based on qty
-    const btn = document.getElementById('add-to-cart-btn');
-    if (qty > 0) {
-        btn.disabled = false;
-        btn.classList.remove('disabled:bg-gray-300', 'disabled:cursor-not-allowed');
-    } else {
-        btn.disabled = true;
-        btn.classList.add('disabled:bg-gray-300', 'disabled:cursor-not-allowed');
-    }
-}
-
-function addToCartFromDetail() {
-    if (qty === 0) {
-        alert('Pilih jumlah terlebih dahulu!');
-        return;
-    }
-    
-    productNote = document.getElementById('product-note').value;
-    
-    // Get cart from localStorage
-    let cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
-    
-    // Check if product already in cart
-    const existingIndex = cart.findIndex(item => item.name === productName);
-    
-    if (existingIndex !== -1) {
-        // Update existing item
-        cart[existingIndex].qty += qty;
-        cart[existingIndex].note = productNote;
-    } else {
-        // Add new item
-        cart.push({
-            name: productName,
-            price: productPrice,
-            qty: qty,
-            note: productNote,
-            addedAt: new Date().toISOString()
+            fetchMenuDetail(menuId);
         });
-    }
-    
-    // Save to localStorage
-    localStorage.setItem('wastewise_cart', JSON.stringify(cart));
-    
-    // Update badge
-    if (typeof updateBadge === 'function') {
-        updateBadge();
-    }
-    
-    // ✅ PENTING: Trigger manual storage event agar halaman lain terupdate
-    window.dispatchEvent(new Event('storage'));
-    
-    // Success feedback & AUTO BACK
-    const btn = document.getElementById('add-to-cart-btn');
-    const originalHTML = btn.innerHTML;
-    
-    // Ubah tombol jadi hijau dengan centang
-    btn.innerHTML = '<i class="fas fa-check"></i> <span>Berhasil Ditambahkan!</span>';
-    btn.classList.remove('bg-primary', 'hover:bg-primary/90');
-    btn.classList.add('bg-green-600');
-    btn.disabled = true;
-    
-    // ✅ Tunggu 1 detik, lalu kembali ke halaman sebelumnya
-    setTimeout(() => {
-        window.history.back();
-    }, 1000);
-}
 
-// Initialize UI
-updateUI();
-</script>
+        async function fetchMenuDetail(menuId) {
+            try {
+                const response = await apiFetch(`/api/menus/${menuId}`);
+                currentMenu = response.data;
+
+                // Inside fetchMenuDetail(menuId) in detail-produk.html
+                document.getElementById('product-name').textContent = currentMenu.NamaMenu;
+                document.getElementById('product-price').textContent = `Rp${parseInt(currentMenu.HargaMenu).toLocaleString('id-ID')}`;
+                document.getElementById('product-desc').textContent = currentMenu.Deskripsi || 'Tidak ada deskripsi.';
+                document.getElementById('stock-display').textContent = currentMenu.Stok;
+
+                // ADD THIS NEW BLOCK: Handle the dynamic image
+                const imgEl = document.getElementById('product-image');
+                const iconEl = document.getElementById('default-icon');
+
+                if (currentMenu.foto_url) { // Change 'foto_url' if your DB column name is different
+                    // Assuming backend returns a full URL. If relative, prepend your backend URL.
+                    imgEl.src = currentMenu.foto_url;
+                    imgEl.classList.remove('hidden'); // Show image
+                    iconEl.classList.add('hidden'); // Hide icon
+                }
+                // Optional: If you added id="tenant-name" to the HTML element showing the resto name
+                // document.getElementById('tenant-name').textContent = currentMenu.NamaResto;
+
+                updateUI();
+            } catch (error) {
+                console.error('Error fetching menu:', error);
+                alert('Gagal memuat data produk.');
+            }
+        }
+
+        function increaseQty() {
+            if (!currentMenu) return;
+            if (qty < currentMenu.Stok) {
+                qty++;
+                updateUI();
+            } else {
+                alert(`Stok hanya tersisa ${currentMenu.Stok}!`);
+            }
+        }
+
+        function decreaseQty() {
+            if (qty > 0) {
+                qty--;
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            if (!currentMenu) return;
+
+            document.getElementById('qty-display').textContent = qty;
+            document.getElementById('total-price').textContent = `Rp${(qty * currentMenu.HargaMenu).toLocaleString('id-ID')}`; // Changed to HargaMenu
+
+            const btn = document.getElementById('add-to-cart-btn');
+            if (qty > 0) {
+                btn.disabled = false;
+                btn.classList.remove('disabled:bg-gray-300', 'disabled:cursor-not-allowed');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('disabled:bg-gray-300', 'disabled:cursor-not-allowed');
+            }
+        }
+
+        function addToCartFromDetail() {
+            if (qty === 0 || !currentMenu) return;
+
+            const productNote = document.getElementById('product-note').value;
+            let cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
+
+            const existingIndex = cart.findIndex(item => item.kodeMenu === currentMenu.KodeMenu);
+
+            if (existingIndex !== -1) {
+                cart[existingIndex].qty += qty;
+                cart[existingIndex].note = productNote;
+            } else {
+                // SECURE CART PUSH: Using Database Data
+                cart.push({
+                    kodeMenu: currentMenu.KodeMenu,
+                    kodeResto: currentMenu.KodeResto,
+                    name: currentMenu.NamaMenu,
+                    price: parseInt(currentMenu.HargaMenu), // Changed to HargaMenu
+                    qty: qty,
+                    note: productNote,
+                    addedAt: new Date().toISOString()
+                });
+            }
+
+            localStorage.setItem('wastewise_cart', JSON.stringify(cart));
+            window.dispatchEvent(new Event('storage')); // Sync other tabs/badges
+
+            const btn = document.getElementById('add-to-cart-btn');
+            btn.innerHTML = '<i class="fas fa-check"></i> <span>Berhasil Ditambahkan!</span>';
+            btn.classList.remove('bg-primary');
+            btn.classList.add('bg-green-600');
+            btn.disabled = true;
+
+            setTimeout(() => {
+                window.history.back();
+            }, 1000);
+        }
+    </script>
 
 </body>
+
 </html>

@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warung AW - WasteWise</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -21,7 +22,7 @@
             }
         }
     </script>
-    
+
     <style>
         * {
             margin: 0;
@@ -58,242 +59,248 @@
         }
     </style>
 </head>
+
 <body>
 
-<div class="phone-container">
-    <!-- Header Image -->
-    <div class="relative h-64">
-        <img src="../assets/images/nasigoreng.png" alt="Warung AW" 
-             class="w-full h-full object-cover rounded-b-3xl"
-             onerror="this.src='https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=300&fit=crop'">
-        
-        <!-- Back Button -->
-        <button onclick="history.back()" 
-                class="absolute top-12 left-5 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
+    <div class="phone-container">
+        <!-- Header Image -->
+        <div class="relative h-64">
+            <img src="../assets/images/nasigoreng.png" alt="Warung AW" class="w-full h-full object-cover rounded-b-3xl" onerror="this.src='https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=300&fit=crop'">
+
+            <!-- Back Button -->
+            <button onclick="history.back()" class="absolute top-12 left-5 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
             <i class="fas fa-arrow-left text-primary"></i>
         </button>
-    </div>
-    
-    <!-- Content -->
-    <div class="px-5 pb-28">
-        <!-- Tenant Info -->
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">Warung AW</h1>
-            <div class="flex items-center gap-4 text-sm text-gray-500">
-                <div class="flex items-center gap-1">
-                    <i class="fas fa-map-marker-alt text-accent"></i>
-                    <span>Kantin UC Makassar</span>
+        </div>
+
+        <!-- Content -->
+        <div class="px-5 pb-28">
+            <!-- Tenant Info -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Warung AW</h1>
+                <div class="flex items-center gap-4 text-sm text-gray-500">
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-map-marker-alt text-accent"></i>
+                        <span>Kantin UC Makassar</span>
+                    </div>
+                    <span class="text-gray-300">•</span>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-clock text-accent"></i>
+                        <span>10 min</span>
+                    </div>
                 </div>
-                <span class="text-gray-300">•</span>
-                <div class="flex items-center gap-1">
-                    <i class="fas fa-clock text-accent"></i>
-                    <span>10 min</span>
+                <div class="flex items-center gap-2 mt-2">
+                    <div class="flex items-center gap-1 bg-orange-100 px-2 py-1 rounded-lg">
+                        <i class="fas fa-star text-accent text-xs"></i>
+                        <span class="text-xs font-bold text-accent">4.3</span>
+                    </div>
+                    <span class="text-xs text-gray-500">• Terbuka</span>
                 </div>
             </div>
-            <div class="flex items-center gap-2 mt-2">
-                <div class="flex items-center gap-1 bg-orange-100 px-2 py-1 rounded-lg">
-                    <i class="fas fa-star text-accent text-xs"></i>
-                    <span class="text-xs font-bold text-accent">4.3</span>
-                </div>
-                <span class="text-xs text-gray-500">• Terbuka</span>
+
+            <!-- Products Grid -->
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Menu Tersedia</h2>
+
+            <div class="grid grid-cols-2 gap-4" id="menu-grid">
             </div>
         </div>
-        
-        <!-- Products Grid -->
-        <h2 class="text-lg font-bold text-gray-800 mb-4">Menu Tersedia</h2>
-        
-        <div class="grid grid-cols-2 gap-4">
-            <!-- Paket 5k -->
-            <div class="bg-white border border-gray-200 rounded-2xl p-4 relative" 
-                 onclick="goToProductDetail('Paket 5k', 5000, 5, 'Nasi + Lauk + Sayur')">
-                <div class="h-32 bg-gray-100 rounded-xl mb-3 flex items-center justify-center relative overflow-hidden">
-                    <img src="../assets/images/nasigoreng.png" alt="Paket 5k" 
-                         class="w-full h-full object-cover"
-                         onerror="this.src='https://images.unsplash.com/photo-1603138842577-7b67493f342a?w=200&h=150&fit=crop'">
-                    <div class="absolute top-2 right-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-full">
-                        Stok: 5
-                    </div>
+
+        <!-- Bottom Cart Bar (Fixed) - Tanpa Bottom Navigation lagi -->
+        <div id="bottom-cart-bar" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] px-5 pb-6 z-20 hidden">
+            <div onclick="window.location.href='cart.html'" class="bg-primary text-white rounded-2xl p-4 shadow-2xl flex items-center justify-between cursor-pointer hover:bg-primary/90 transition">
+                <div class="flex items-center gap-2">
+                    <span class="font-semibold text-sm">Keranjang</span>
+                    <span class="text-xs opacity-90" id="cart-product-count">| 1 produk</span>
                 </div>
-                <h3 class="font-bold text-sm text-gray-800 mb-1">Paket 5k</h3>
-                <p class="text-xs text-gray-500 mb-2">Nasi + Lauk + Sayur</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-primary font-bold text-sm">Rp5.000</span>
-                    <button class="w-7 h-7 bg-accent text-white rounded-full flex items-center justify-center hover:bg-accent/90 transition">
-                        <i class="fas fa-plus text-xs"></i>
-                    </button>
-                </div>
-                <!-- Quantity Badge (show if in cart) -->
-                <div id="qty-badge-paket5k" class="hidden absolute top-2 left-2 bg-accent text-white text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">
-                    1
-                </div>
-            </div>
-            
-            <!-- Paket 10k -->
-            <div class="bg-white border border-gray-200 rounded-2xl p-4 relative" 
-                 onclick="goToProductDetail('Paket 10k', 10000, 8, 'Nasi + 2 Lauk + Sayur')">
-                <div class="h-32 bg-gray-100 rounded-xl mb-3 flex items-center justify-center relative overflow-hidden">
-                    <img src="../assets/images/nasigoreng.png" alt="Paket 10k" 
-                         class="w-full h-full object-cover"
-                         onerror="this.src='https://images.unsplash.com/photo-1603138842577-7b67493f342a?w=200&h=150&fit=crop'">
-                    <div class="absolute top-2 right-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-full">
-                        Stok: 8
-                    </div>
-                </div>
-                <h3 class="font-bold text-sm text-gray-800 mb-1">Paket 10k</h3>
-                <p class="text-xs text-gray-500 mb-2">Nasi + 2 Lauk + Sayur</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-primary font-bold text-sm">Rp10.000</span>
-                    <button class="w-7 h-7 bg-accent text-white rounded-full flex items-center justify-center hover:bg-accent/90 transition">
-                        <i class="fas fa-plus text-xs"></i>
-                    </button>
-                </div>
-                <div id="qty-badge-paket10k" class="hidden absolute top-2 left-2 bg-accent text-white text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">
-                    0
-                </div>
-            </div>
-            
-            <!-- Paket 15k -->
-            <div class="bg-white border border-gray-200 rounded-2xl p-4 relative" 
-                 onclick="goToProductDetail('Paket 15k', 15000, 3, 'Nasi + 3 Lauk + Sayur + Minum')">
-                <div class="h-32 bg-gray-100 rounded-xl mb-3 flex items-center justify-center relative overflow-hidden">
-                    <img src="../assets/images/nasigoreng.png" alt="Paket 15k" 
-                         class="w-full h-full object-cover"
-                         onerror="this.src='https://images.unsplash.com/photo-1603138842577-7b67493f342a?w=200&h=150&fit=crop'">
-                    <div class="absolute top-2 right-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-full">
-                        Stok: 3
-                    </div>
-                </div>
-                <h3 class="font-bold text-sm text-gray-800 mb-1">Paket 15k</h3>
-                <p class="text-xs text-gray-500 mb-2">Nasi + 3 Lauk + Sayur + Minum</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-primary font-bold text-sm">Rp15.000</span>
-                    <button class="w-7 h-7 bg-accent text-white rounded-full flex items-center justify-center hover:bg-accent/90 transition">
-                        <i class="fas fa-plus text-xs"></i>
-                    </button>
-                </div>
-                <div id="qty-badge-paket15k" class="hidden absolute top-2 left-2 bg-accent text-white text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">
-                    0
-                </div>
-            </div>
-            
-            <!-- Paket 20k -->
-            <div class="bg-white border border-gray-200 rounded-2xl p-4 relative" 
-                 onclick="goToProductDetail('Paket 20k', 20000, 10, 'Nasi + 4 Lauk + Sayur + Minum + Dessert')">
-                <div class="h-32 bg-gray-100 rounded-xl mb-3 flex items-center justify-center relative overflow-hidden">
-                    <img src="../assets/images/nasigoreng.png" alt="Paket 20k" 
-                         class="w-full h-full object-cover"
-                         onerror="this.src='https://images.unsplash.com/photo-1603138842577-7b67493f342a?w=200&h=150&fit=crop'">
-                    <div class="absolute top-2 right-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-full">
-                        Stok: 10
-                    </div>
-                </div>
-                <h3 class="font-bold text-sm text-gray-800 mb-1">Paket 20k</h3>
-                <p class="text-xs text-gray-500 mb-2">Nasi + 4 Lauk + Sayur + Minum + Dessert</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-primary font-bold text-sm">Rp20.000</span>
-                    <button class="w-7 h-7 bg-accent text-white rounded-full flex items-center justify-center hover:bg-accent/90 transition">
-                        <i class="fas fa-plus text-xs"></i>
-                    </button>
-                </div>
-                <div id="qty-badge-paket20k" class="hidden absolute top-2 left-2 bg-accent text-white text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">
-                    0
-                </div>
+                <span id="cart-total-price" class="font-bold text-sm">Rp5.000</span>
             </div>
         </div>
     </div>
-    
-    <!-- Bottom Cart Bar (Fixed) - Tanpa Bottom Navigation lagi -->
-    <div id="bottom-cart-bar" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] px-5 pb-6 z-20 hidden">
-        <div onclick="window.location.href='cart.html'" 
-             class="bg-primary text-white rounded-2xl p-4 shadow-2xl flex items-center justify-between cursor-pointer hover:bg-primary/90 transition">
-            <div class="flex items-center gap-2">
-                <span class="font-semibold text-sm">Keranjang</span>
-                <span class="text-xs opacity-90" id="cart-product-count">| 1 produk</span>
-            </div>
-            <span id="cart-total-price" class="font-bold text-sm">Rp5.000</span>
-        </div>
-    </div>
-</div>
 
-<script src="../js/app.js"></script>
+    <script src="../js/app.js"></script>
 
-<script>
-// ========== NAVIGATION ==========
+    <script>
+        // ========== NAVIGATION ==========
 
-function goToProductDetail(name, price, stock, desc) {
-    const url = `detail-produk.html?name=${encodeURIComponent(name)}&price=${price}&stock=${stock}&desc=${encodeURIComponent(desc)}`;
-    window.location.href = url;
-}
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tenantId = urlParams.get('id');
 
-// ========== UPDATE CART DISPLAY ==========
+            if (!tenantId) {
+                alert('Tenant tidak ditemukan!');
+                window.location.href = 'dashboard.html';
+                return;
+            }
 
-function updateCartDisplay() {
-    const cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
-    const bottomCartBar = document.getElementById('bottom-cart-bar');
-    const cartProductCount = document.getElementById('cart-product-count');
-    const cartTotalPrice = document.getElementById('cart-total-price');
-    
-    if (cart.length > 0) {
-        // Show bottom cart bar
-        bottomCartBar.classList.remove('hidden');
-        
-        // Calculate totals
-        const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-        const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-        
-        // Update display
-        cartProductCount.textContent = `| ${totalItems} produk`;
-        cartTotalPrice.textContent = `Rp${totalPrice.toLocaleString('id-ID')}`;
-        
-        // Update individual product badges
-        updateProductBadges(cart);
-    } else {
-        // Hide bottom cart bar
-        bottomCartBar.classList.add('hidden');
-        
-        // Hide all product badges
-        hideAllProductBadges();
-    }
-}
+            fetchTenantDetails(tenantId);
+            updateCartDisplay();
+        });
 
-function updateProductBadges(cart) {
-    // Hide all badges first
-    hideAllProductBadges();
-    
-    // Show badges for products in cart
-    cart.forEach(item => {
-        const badgeId = `qty-badge-${item.name.toLowerCase().replace(/\s+/g, '')}`;
-        const badge = document.getElementById(badgeId);
-        if (badge) {
-            badge.textContent = item.qty;
-            badge.classList.remove('hidden');
+        async function fetchTenantDetails(tenantId) {
+            try {
+                const response = await apiFetch(`/api/tenants/${tenantId}`);
+
+                // Extract data safely
+                const payload = response.data || response;
+                const tenantData = payload.tenant;
+                const menusData = payload.menus;
+
+                // 1. Update Tenant Header Info SAFELY
+                // We check if the element exists in your HTML before touching it!
+                const nameEl = document.getElementById('tenant-name');
+                const addressEl = document.getElementById('tenant-address');
+
+                if (nameEl && tenantData) {
+                    nameEl.textContent = tenantData.Nama || 'Tenant Tanpa Nama';
+                }
+
+                if (addressEl && tenantData) {
+                    addressEl.textContent = tenantData.Alamat || 'Lokasi tidak diketahui';
+                }
+
+                // 2. Render Menus
+                if (menusData) {
+                    renderMenus(menusData, tenantId);
+                } else {
+                    console.error("Data menus tidak ditemukan di dalam JSON");
+                }
+
+            } catch (error) {
+                // If it still crashes, this will print the EXACT reason to your Console tab
+                console.error('Error saat mengambil detail tenant:', error);
+
+                const grid = document.getElementById('menu-grid');
+                if (grid) {
+                    grid.innerHTML = '<p class="col-span-2 text-center text-red-500 py-4">Gagal memuat menu. Cek tab Console untuk detail.</p>';
+                }
+            }
         }
-    });
-}
 
-function hideAllProductBadges() {
-    const badges = document.querySelectorAll('[id^="qty-badge-"]');
-    badges.forEach(badge => badge.classList.add('hidden'));
-}
+        function renderMenus(menus, tenantId) {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = '';
 
-// Update on page load
-document.addEventListener('DOMContentLoaded', function() {
-    updateCartDisplay();
-});
+            if (!menus || !Array.isArray(menus) || menus.length === 0) {
+                grid.innerHTML = '<p class="col-span-2 text-center text-gray-500 py-4">Belum ada menu di tenant ini.</p>';
+                return;
+            }
 
-// Update when returning to page
-window.addEventListener('focus', function() {
-    setTimeout(updateCartDisplay, 100);
-});
+            menus.forEach(menu => {
+                try {
+                    // ULTRA-SAFE MAPPING
+                    // We provide explicit defaults for every single value to prevent JS crashes
+                    const id = menu.KodeMenu || 'UNKNOWN';
+                    const nama = menu.NamaMenu || menu.Nama || 'Menu Tanpa Nama';
 
-// Listen for storage changes
-window.addEventListener('storage', function() {
-    updateCartDisplay();
-});
+                    // Safe Price Parsing
+                    let hargaValue = 0;
+                    if (menu.HargaMenu) hargaValue = menu.HargaMenu;
+                    else if (menu.Harga) hargaValue = menu.Harga;
+                    const formattedPrice = parseInt(hargaValue).toLocaleString('id-ID');
 
-// Polling for real-time updates
-setInterval(updateCartDisplay, 1000);
-</script>
+                    // Safe Fallbacks
+                    const stok = menu.Stok !== undefined && menu.Stok !== null ? menu.Stok : 'Habis';
+                    const deskripsi = menu.Deskripsi || '';
+                    const imageUrl = menu.foto_url || 'https://images.unsplash.com/photo-1603138842577-7b67493f342a?w=200&h=150&fit=crop';
+
+                    const cardHTML = `
+                    <div class="bg-white border border-gray-200 rounded-2xl p-4 relative cursor-pointer hover:shadow-md transition" 
+                         onclick="window.location.href='detail-produk.html?id=${id}'">
+                        <div class="h-32 bg-gray-100 rounded-xl mb-3 flex items-center justify-center relative overflow-hidden">
+                            <img src="${imageUrl}" class="w-full h-full object-cover">
+                            <div class="absolute top-2 right-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
+                                Stok: ${stok}
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-sm text-gray-800 mb-1">${nama}</h3>
+                        <p class="text-xs text-gray-500 mb-2 truncate">${deskripsi}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary font-bold text-sm">Rp${formattedPrice}</span>
+                            <button class="w-7 h-7 bg-accent text-white rounded-full flex items-center justify-center">
+                                <i class="fas fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                    grid.insertAdjacentHTML('beforeend', cardHTML);
+                } catch (err) {
+                    console.error("Error rendering specific menu item:", err, menu);
+                    // We wrap the loop in a try/catch so if ONE menu item is broken, 
+                    // it doesn't crash the whole page and the other menus still load!
+                }
+            });
+        }
+
+        // ========== UPDATE CART DISPLAY ==========
+
+        function updateCartDisplay() {
+            const cart = JSON.parse(localStorage.getItem('wastewise_cart')) || [];
+            const bottomCartBar = document.getElementById('bottom-cart-bar');
+            const cartProductCount = document.getElementById('cart-product-count');
+            const cartTotalPrice = document.getElementById('cart-total-price');
+
+            if (cart.length > 0) {
+                // Show bottom cart bar
+                bottomCartBar.classList.remove('hidden');
+
+                // Calculate totals
+                const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+                const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+                // Update display
+                cartProductCount.textContent = `| ${totalItems} produk`;
+                cartTotalPrice.textContent = `Rp${totalPrice.toLocaleString('id-ID')}`;
+
+                // Update individual product badges
+                updateProductBadges(cart);
+            } else {
+                // Hide bottom cart bar
+                bottomCartBar.classList.add('hidden');
+
+                // Hide all product badges
+                hideAllProductBadges();
+            }
+        }
+
+        function updateProductBadges(cart) {
+            // Hide all badges first
+            hideAllProductBadges();
+
+            // Show badges for products in cart
+            cart.forEach(item => {
+                const badgeId = `qty-badge-${item.name.toLowerCase().replace(/\s+/g, '')}`;
+                const badge = document.getElementById(badgeId);
+                if (badge) {
+                    badge.textContent = item.qty;
+                    badge.classList.remove('hidden');
+                }
+            });
+        }
+
+        function hideAllProductBadges() {
+            const badges = document.querySelectorAll('[id^="qty-badge-"]');
+            badges.forEach(badge => badge.classList.add('hidden'));
+        }
+
+        // Update on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartDisplay();
+        });
+
+        // Update when returning to page
+        window.addEventListener('focus', function() {
+            setTimeout(updateCartDisplay, 100);
+        });
+
+        // Listen for storage changes
+        window.addEventListener('storage', function() {
+            updateCartDisplay();
+        });
+
+        // Polling for real-time updates
+        setInterval(updateCartDisplay, 1000);
+    </script>
 
 </body>
+
 </html>
